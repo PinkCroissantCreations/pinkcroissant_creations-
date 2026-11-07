@@ -1076,6 +1076,22 @@
                 drawer.classList.add('translate-x-full');
             }
         }
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyAHoc709jxhwBFRwhnv8MEUhcEFxEABHNU",
+          authDomain: "pink-croissant-site.firebaseapp.com",
+          projectId: "pink-croissant-site",
+          storageBucket: "pink-croissant-site.firebasestorage.app",
+          messagingSenderId: "863424913207",
+          appId: "G-EXPDK0SEGV"
+        };
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
         // Generate Order Text (Clean safe strings)
         function generateOrderText() {
