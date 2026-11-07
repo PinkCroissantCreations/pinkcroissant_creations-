@@ -53,7 +53,7 @@
 
     <!-- Top Announcement Bar -->
     <div class="bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white text-xs py-2 px-4 text-center font-bold flex items-center justify-center gap-2 shadow-sm">
-        <span id="announcementText">🥐 Welcome to my handmade creations shop 🥐 </span>
+        <span id="announcementText">🥐 Handmade creations made with love! · Orders directly via our Instagram DMs 💌</span>
     </div>
 
     <!-- Header / Navbar -->
@@ -67,7 +67,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 group-hover:text-pink-600 transition-colors">
-                        Pink Croissant <span class="inline-block text-pink-400 text-sm"></span>
+                        Pink Croissant <span class="inline-block text-pink-400 text-sm">✨</span>
                     </h1>
                     <p class="text-xs text-pink-500 font-bold flex items-center gap-1">
                         <i data-lucide="instagram" class="w-3.5 h-3.5"></i>
@@ -88,7 +88,12 @@
 
             <!-- Actions: Settings & Cart -->
             <div class="flex items-center gap-2 sm:gap-2.5">
-    
+                <button onclick="toggleSettingsModal(true)" 
+                        title="Instagram Settings" 
+                        class="p-2.5 text-slate-500 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors flex items-center gap-1.5 text-xs font-bold">
+                    <i data-lucide="settings" class="w-4 h-4 text-pink-400"></i>
+                    <span class="hidden sm:inline">IG Handle</span>
+                </button>
 
                 <!-- Cart Button -->
                 <button onclick="toggleCartDrawer(true)" 
@@ -119,11 +124,11 @@
         <!-- Hero Banner: Find your own taste -->
         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-100 via-[#feeef4] to-pink-50 border border-pink-200 p-8 sm:p-10 shadow-sm text-center flex flex-col items-center justify-center">
             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-pink-200 text-pink-600 text-xs font-extrabold mb-3">
-                <div class="w-3.5 h-3.5 text-pink-500"></div>
-                <span> Handmade with Love</span>
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-500"></i>
+                <span>Handmade with Love</span>
             </div>
             <h2 class="text-3xl sm:text-4xl font-black text-pink-600 tracking-tight mb-2">
-                Find your own taste !
+                Find your own taste ✨
             </h2>
             <p class="text-xs sm:text-sm text-pink-400 font-bold leading-relaxed max-w-xl">
                 Browse my creations below. Click any item to view details, add to cart and send your order request via Instagram DMs !
@@ -350,6 +355,16 @@
                     <input type="text" id="igHandleInput" class="w-full bg-pink-50/50 border border-pink-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-pink-300 focus:outline-none" placeholder="thepinkcroissant_creations">
                 </div>
             </div>
+
+            <div class="flex gap-2">
+                <button onclick="toggleSettingsModal(false)" class="flex-1 py-2.5 rounded-xl border border-pink-200 text-xs font-bold text-slate-600 hover:bg-pink-50">
+                    Cancel
+                </button>
+                <button onclick="saveInstagramHandle()" class="flex-1 gradient-pink text-white py-2.5 rounded-xl text-xs font-bold shadow-md shadow-pink-200 hover:brightness-105">
+                    Save
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- TOAST NOTIFICATION -->
@@ -590,6 +605,15 @@
             document.addEventListener('DOMContentLoaded', initApp);
         } else {
             initApp();
+        }
+
+        function updateIgHandleDisplays() {
+            const hIg = document.getElementById('headerIgDisplay');
+            const fIg = document.getElementById('footerIgDisplay');
+            const inputIg = document.getElementById('igHandleInput');
+            if (hIg) hIg.innerText = '@' + instagramHandle;
+            if (fIg) fIg.innerText = '@' + instagramHandle;
+            if (inputIg) inputIg.value = instagramHandle;
         }
 
         function renderCategoryFilters() {
@@ -1126,6 +1150,20 @@
             }
         }
 
+        function saveInstagramHandle() {
+            const input = document.getElementById('igHandleInput');
+            if (!input) return;
+            const val = input.value.trim().replace('@', '');
+            if (!val) {
+                showToast('Please enter a valid username');
+                return;
+            }
+            instagramHandle = val;
+            updateIgHandleDisplays();
+            toggleSettingsModal(false);
+            showToast('Instagram @' + instagramHandle + ' ✨');
+        }
+
         // Generate Order Text (Clean safe strings)
         function generateOrderText() {
             if (cart.length === 0) return null;
@@ -1163,7 +1201,7 @@
             lines.push('• City: ' + city);
             if (notes !== '-') lines.push('• Notes: ' + notes);
             lines.push('');
-            lines.push('Hello! I would love to order the items above. Please let me know regarding availability and payment methods. Thank you so much! ');
+            lines.push('Hello! I would love to order the items above. Please let me know regarding availability and payment methods. Thank you so much! 🌸✨');
 
             return lines.join('\n');
         }
