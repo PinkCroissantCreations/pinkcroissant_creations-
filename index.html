@@ -53,7 +53,7 @@
 
     <!-- Top Announcement Bar -->
     <div class="bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white text-xs py-2 px-4 text-center font-bold flex items-center justify-center gap-2 shadow-sm">
-        <span id="announcementText">🥐 Handmade creations made with love! · Orders directly via our Instagram DMs 💌</span>
+        <span id="announcementText">🥐 Welcome to my handmade creations shop 🥐</span>
     </div>
 
     <!-- Header / Navbar -->
@@ -67,12 +67,12 @@
                 </div>
                 <div>
                     <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 group-hover:text-pink-600 transition-colors">
-                        Pink Croissant <span class="inline-block text-pink-400 text-sm">✨</span>
+                        Pink Croissant
                     </h1>
-                    <p class="text-xs text-pink-500 font-bold flex items-center gap-1">
+                    <a href="https://instagram.com/thepinkcroissant_creations" target="_blank" rel="noopener noreferrer" class="text-xs text-pink-500 font-bold flex items-center gap-1 hover:underline">
                         <i data-lucide="instagram" class="w-3.5 h-3.5"></i>
-                        <span id="headerIgDisplay">@thepinkcroissant_creations</span>
-                    </p>
+                        <span>@thepinkcroissant_creations</span>
+                    </a>
                 </div>
             </div>
 
@@ -86,16 +86,8 @@
                 </div>
             </div>
 
-            <!-- Actions: Settings & Cart -->
+            <!-- Actions: Cart Button Only -->
             <div class="flex items-center gap-2 sm:gap-2.5">
-                <button onclick="toggleSettingsModal(true)" 
-                        title="Instagram Settings" 
-                        class="p-2.5 text-slate-500 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors flex items-center gap-1.5 text-xs font-bold">
-                    <i data-lucide="settings" class="w-4 h-4 text-pink-400"></i>
-                    <span class="hidden sm:inline">IG Handle</span>
-                </button>
-
-                <!-- Cart Button -->
                 <button onclick="toggleCartDrawer(true)" 
                         class="relative flex items-center gap-2 gradient-pink hover:brightness-105 text-white px-4 sm:px-5 py-2.5 rounded-full font-bold shadow-md shadow-pink-300/40 transition-transform active:scale-95">
                     <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
@@ -123,19 +115,18 @@
         
         <!-- Hero Banner: Find your own taste -->
         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-100 via-[#feeef4] to-pink-50 border border-pink-200 p-8 sm:p-10 shadow-sm text-center flex flex-col items-center justify-center">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-pink-200 text-pink-600 text-xs font-extrabold mb-3">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-500"></i>
+            <div class="inline-flex items-center px-3 py-1 rounded-full bg-white/80 border border-pink-200 text-pink-600 text-xs font-extrabold mb-3">
                 <span>Handmade with Love</span>
             </div>
             <h2 class="text-3xl sm:text-4xl font-black text-pink-600 tracking-tight mb-2">
-                Find your own taste ✨
+                Find your own taste
             </h2>
             <p class="text-xs sm:text-sm text-pink-400 font-bold leading-relaxed max-w-xl">
                 Browse my creations below. Click any item to view details, add to cart and send your order request via Instagram DMs !
             </p>
         </div>
 
-        <!-- Filter & Categories Area -->
+        <!-- Filter & Categories Area (Words Only, No Icons) -->
         <div class="space-y-3">
             <div class="flex flex-wrap items-center gap-2" id="mainCategoriesBar"></div>
             <div id="subCategoriesBar" class="hidden flex-wrap items-center gap-2 pl-2 pt-1 border-l-2 border-pink-300"></div>
@@ -173,10 +164,10 @@
                 <p class="font-bold text-slate-700" id="footerText">© 2026 Pink Croissant. Handmade Creations.</p>
             </div>
             <div class="flex items-center gap-4">
-                <span class="flex items-center gap-1.5 text-pink-600 font-extrabold cursor-pointer hover:underline" onclick="toggleSettingsModal(true)">
+                <a href="https://instagram.com/thepinkcroissant_creations" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-pink-600 font-extrabold hover:underline">
                     <i data-lucide="instagram" class="w-4 h-4"></i>
-                    <span id="footerIgDisplay">@thepinkcroissant_creations</span>
-                </span>
+                    <span>@thepinkcroissant_creations</span>
+                </a>
             </div>
         </div>
     </footer>
@@ -215,7 +206,7 @@
                     <!-- Description -->
                     <div class="border-t border-b border-pink-100 py-3.5 space-y-2">
                         <h4 class="text-xs font-black text-slate-700 uppercase tracking-wider flex items-center gap-1.5" id="modalDescHeader">
-                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-400"></i> Description & Details
+                            Description & Details
                         </h4>
                         <p id="modalDesc" class="text-xs text-slate-600 leading-relaxed font-medium"></p>
                         
@@ -329,44 +320,6 @@
         </div>
     </div>
 
-    <!-- SETTINGS MODAL -->
-    <div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-200">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-pink-100 transform scale-95 transition-transform duration-200" id="settingsModalCard">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-xl gradient-pink flex items-center justify-center text-white">
-                        <i data-lucide="instagram" class="w-5 h-5"></i>
-                    </div>
-                    <h4 class="font-black text-slate-900">Instagram Settings</h4>
-                </div>
-                <button onclick="toggleSettingsModal(false)" class="text-slate-400 hover:text-slate-600 p-1 rounded-full">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-            
-            <p class="text-xs text-slate-500 mb-4 font-medium leading-relaxed">
-                Set the Instagram username where order DMs will be directed.
-            </p>
-
-            <div class="mb-5">
-                <label class="block text-xs font-black text-slate-700 mb-1.5">Instagram Username (@)</label>
-                <div class="relative">
-                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-pink-400 font-black text-sm">@</span>
-                    <input type="text" id="igHandleInput" class="w-full bg-pink-50/50 border border-pink-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-pink-300 focus:outline-none" placeholder="thepinkcroissant_creations">
-                </div>
-            </div>
-
-            <div class="flex gap-2">
-                <button onclick="toggleSettingsModal(false)" class="flex-1 py-2.5 rounded-xl border border-pink-200 text-xs font-bold text-slate-600 hover:bg-pink-50">
-                    Cancel
-                </button>
-                <button onclick="saveInstagramHandle()" class="flex-1 gradient-pink text-white py-2.5 rounded-xl text-xs font-bold shadow-md shadow-pink-200 hover:brightness-105">
-                    Save
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-extrabold transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300">
         <i data-lucide="check" class="w-4 h-4 text-pink-400" id="toastIcon"></i>
@@ -375,7 +328,9 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        let instagramHandle = 'thepinkcroissant_creations';
+        // Fixed Instagram Handle - locked to Pink Croissant
+        const INSTAGRAM_HANDLE = 'thepinkcroissant_creations';
+        
         let currentMainCategory = 'all';
         let currentSubCategory = 'all';
         let currentBearSize = 'all';
@@ -569,12 +524,12 @@
             }
         ];
 
-        // Categories (English only)
+        // Categories - WORDS ONLY, NO ICONS
         const mainCategories = [
-            { id: 'all', name: 'All', icon: 'sparkles' },
-            { id: 'knitted', name: 'Knitted Items', icon: 'heart' },
-            { id: 'paintings', name: 'Art & Prints', icon: 'palette' },
-            { id: 'extras', name: 'Extras', icon: 'gift' }
+            { id: 'all', name: 'All' },
+            { id: 'knitted', name: 'Knitted Items' },
+            { id: 'paintings', name: 'Art & Prints' },
+            { id: 'extras', name: 'Extras' }
         ];
 
         const subCategories = [
@@ -590,9 +545,8 @@
             { id: 'large', name: 'Large' }
         ];
 
-        // Safe Initialization
+        // Initialization
         function initApp() {
-            updateIgHandleDisplays();
             renderCategoryFilters();
             renderProducts();
             renderCart();
@@ -607,15 +561,6 @@
             initApp();
         }
 
-        function updateIgHandleDisplays() {
-            const hIg = document.getElementById('headerIgDisplay');
-            const fIg = document.getElementById('footerIgDisplay');
-            const inputIg = document.getElementById('igHandleInput');
-            if (hIg) hIg.innerText = '@' + instagramHandle;
-            if (fIg) fIg.innerText = '@' + instagramHandle;
-            if (inputIg) inputIg.value = instagramHandle;
-        }
-
         function renderCategoryFilters() {
             const mainBar = document.getElementById('mainCategoriesBar');
             if (!mainBar) return;
@@ -627,8 +572,7 @@
                     : 'bg-white text-slate-700 hover:bg-pink-50 border border-pink-200/80';
                 return `
                     <button onclick="setMainCategory('${cat.id}')" 
-                            class="px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold transition-all flex items-center gap-1.5 ${activeClass}">
-                        <i data-lucide="${cat.icon}" class="w-3.5 h-3.5"></i>
+                            class="px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold transition-all flex items-center justify-center ${activeClass}">
                         <span>${cat.name}</span>
                     </button>
                 `;
@@ -992,7 +936,6 @@
             if (e.key === 'Escape') {
                 closeProductModal();
                 toggleCartDrawer(false);
-                toggleSettingsModal(false);
             }
         });
 
@@ -1117,7 +1060,7 @@
             if (window.lucide) lucide.createIcons();
         }
 
-        // Toggle Drawers & Modals
+        // Toggle Drawers
         function toggleCartDrawer(open) {
             const drawer = document.getElementById('cartDrawer');
             const backdrop = document.getElementById('cartDrawerBackdrop');
@@ -1131,37 +1074,6 @@
                 backdrop.classList.remove('opacity-100');
                 drawer.classList.add('translate-x-full');
             }
-        }
-
-        function toggleSettingsModal(open) {
-            const modal = document.getElementById('settingsModal');
-            const card = document.getElementById('settingsModalCard');
-            if (!modal || !card) return;
-            if (open) {
-                modal.classList.remove('opacity-0', 'pointer-events-none');
-                modal.classList.add('opacity-100');
-                card.classList.remove('scale-95');
-                card.classList.add('scale-100');
-            } else {
-                modal.classList.add('opacity-0', 'pointer-events-none');
-                modal.classList.remove('opacity-100');
-                card.classList.add('scale-95');
-                card.classList.remove('scale-100');
-            }
-        }
-
-        function saveInstagramHandle() {
-            const input = document.getElementById('igHandleInput');
-            if (!input) return;
-            const val = input.value.trim().replace('@', '');
-            if (!val) {
-                showToast('Please enter a valid username');
-                return;
-            }
-            instagramHandle = val;
-            updateIgHandleDisplays();
-            toggleSettingsModal(false);
-            showToast('Instagram @' + instagramHandle + ' ✨');
         }
 
         // Generate Order Text (Clean safe strings)
@@ -1201,7 +1113,7 @@
             lines.push('• City: ' + city);
             if (notes !== '-') lines.push('• Notes: ' + notes);
             lines.push('');
-            lines.push('Hello! I would love to order the items above. Please let me know regarding availability and payment methods. Thank you so much! 🌸✨');
+            lines.push('Hello! I would love to order the items above. Please let me know regarding availability and payment methods. Thank you so much! 🌸');
 
             return lines.join('\n');
         }
@@ -1229,45 +1141,4 @@
             document.body.removeChild(tempInput);
 
             if (!quiet) {
-                showToast(success ? 'Order copied to clipboard! 📋' : 'Failed to copy.');
-            }
-            return success;
-        }
-
-        function sendOrderViaInstagram() {
-            if (cart.length === 0) {
-                showToast('Please add products to your cart first!');
-                return;
-            }
-
-            copyOrderMessage(true);
-
-            const igDirectUrl = 'https://ig.me/m/' + instagramHandle;
-            showToast('Copied! Opening Instagram DM... 💌', 2500);
-
-            setTimeout(() => {
-                window.open(igDirectUrl, '_blank');
-            }, 500);
-        }
-
-        // Toast Helper
-        let toastTimeout;
-        function showToast(message, duration = 3000) {
-            const toast = document.getElementById('toast');
-            const msgElem = document.getElementById('toastMessage');
-            if (!toast || !msgElem) return;
-            
-            clearTimeout(toastTimeout);
-            msgElem.innerText = message;
-            
-            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
-            toast.classList.add('translate-y-0', 'opacity-100');
-
-            toastTimeout = setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
-                toast.classList.remove('translate-y-0', 'opacity-100');
-            }, duration);
-        }
-    </script>
-</body>
-</html>
+                showToast(success ? 'Order copied to clipboard! 📋' : 'Failed to
