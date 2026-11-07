@@ -1,4 +1,413 @@
-<!-- JAVASCRIPT LOGIC -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink Croissant | Cute Handmade & Knitted Studio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff9fb',
+                            100: '#feeef4',
+                            200: '#fdd9e6',
+                            300: '#fbb3ce',
+                            400: '#f4729f',
+                            500: '#e84880',
+                            600: '#db2777',
+                            700: '#be185d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Nunito', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & Lucide Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Nunito', sans-serif; }
+        .gradient-pink {
+            background: linear-gradient(135deg, #fbb3ce 0%, #f4729f 50%, #db2777 100%);
+        }
+        .gradient-soft-pink {
+            background: linear-gradient(180deg, #fff5f8 0%, #fff9fb 100%);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fff1f5; }
+        ::-webkit-scrollbar-thumb { background: #fbb3ce; border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f4729f; }
+    </style>
+</head>
+<body class="bg-[#fff9fb] text-slate-800 antialiased min-h-screen flex flex-col selection:bg-pink-200 selection:text-pink-800">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white text-xs py-2 px-4 text-center font-bold flex items-center justify-center gap-2 shadow-sm">
+        <span id="announcementText">🥐 Handmade creations made with love! · Orders directly via our Instagram DMs 💌</span>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-pink-100 transition-all shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Brand Logo (Top Left) -->
+            <div class="flex items-center gap-3.5 cursor-pointer group" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div class="relative w-14 h-14 rounded-2xl p-1 bg-white border border-pink-200 shadow-sm shadow-pink-100 group-hover:scale-105 transition-transform flex items-center justify-center overflow-hidden">
+                    <img src="https://i.postimg.cc/BZKt14Zp/pinkcroissant-LOGO.jpg" alt="Pink Croissant Logo" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/120x120/feeef4/e84880?text=Pink+Croissant'">
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 group-hover:text-pink-600 transition-colors">
+                        Pink Croissant <span class="inline-block text-pink-400 text-sm">✨</span>
+                    </h1>
+                    <p class="text-xs text-pink-500 font-bold flex items-center gap-1">
+                        <i data-lucide="instagram" class="w-3.5 h-3.5"></i>
+                        <span id="headerIgDisplay">@thepinkcroissant_creations</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Search Bar (Desktop) -->
+            <div class="hidden md:flex items-center flex-1 max-w-md mx-6">
+                <div class="relative w-full">
+                    <i data-lucide="search" class="w-4 h-4 text-pink-300 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" id="searchInputDesktop" placeholder="Search..." 
+                           class="w-full bg-pink-50/60 border border-pink-200 text-sm rounded-full pl-11 pr-4 py-2.5 text-slate-700 placeholder-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 transition-all"
+                           oninput="handleSearch(this.value)">
+                </div>
+            </div>
+
+            <!-- Actions: Settings & Cart -->
+            <div class="flex items-center gap-2 sm:gap-2.5">
+                <button onclick="toggleSettingsModal(true)" 
+                        title="Instagram Settings" 
+                        class="p-2.5 text-slate-500 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors flex items-center gap-1.5 text-xs font-bold">
+                    <i data-lucide="settings" class="w-4 h-4 text-pink-400"></i>
+                    <span class="hidden sm:inline">IG Handle</span>
+                </button>
+
+                <!-- Cart Button -->
+                <button onclick="toggleCartDrawer(true)" 
+                        class="relative flex items-center gap-2 gradient-pink hover:brightness-105 text-white px-4 sm:px-5 py-2.5 rounded-full font-bold shadow-md shadow-pink-300/40 transition-transform active:scale-95">
+                    <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                    <span class="hidden sm:inline text-sm" id="navCartLabel">Cart</span>
+                    <span id="cartCountBadge" class="bg-white text-pink-600 text-xs font-black px-2.5 py-0.5 rounded-full shadow-sm">
+                        0
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Bar (Mobile) -->
+        <div class="p-3 border-t border-pink-100 md:hidden bg-white/90 px-4">
+            <div class="relative w-full">
+                <i data-lucide="search" class="w-4 h-4 text-pink-300 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="searchInputMobile" placeholder="Search..." 
+                       class="w-full bg-pink-50/50 border border-pink-200 text-sm rounded-full pl-10 pr-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-pink-300"
+                       oninput="handleSearch(this.value)">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        <!-- How To Order Banner (3 Steps) -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-100 via-[#feeef4] to-pink-50 border border-pink-200 p-6 sm:p-8 shadow-sm">
+            <div class="max-w-3xl mb-6">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-pink-200 text-pink-600 text-xs font-extrabold mb-3">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-500"></i>
+                    <span id="bannerTag">Simple & Fast</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-2" id="bannerHeading">
+                    How to order in <span class="text-pink-600">3 simple steps</span> 🌸
+                </h2>
+                <p class="text-sm text-slate-600 font-medium leading-relaxed" id="bannerSubheading">
+                    Choose what you love, see the cart total, and send us a direct message on Instagram in 1 click!
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-pink-200/70 shadow-xs flex items-start gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center font-black text-base shrink-0">
+                        1
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-sm text-slate-900 mb-1" id="step1Title">Choose Your Items</h3>
+                        <p class="text-xs text-slate-500 leading-snug" id="step1Desc">Click on the item to see more details, select quantity, and add it to your cart.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-pink-200/70 shadow-xs flex items-start gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center font-black text-base shrink-0">
+                        2
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-sm text-slate-900 mb-1" id="step2Title">Order Ready</h3>
+                        <p class="text-xs text-slate-500 leading-snug" id="step2Desc">The summary of the products you want is automatically created with full pricing. Tap the 'Cart' button to see it!</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-pink-200/70 shadow-xs flex items-start gap-3.5">
+                    <div class="w-10 h-10 rounded-xl gradient-pink text-white flex items-center justify-center font-black text-base shrink-0 shadow-sm shadow-pink-300">
+                        3
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-sm text-slate-900 mb-1" id="step3Title">Send Order Request via Instagram DM</h3>
+                        <p class="text-xs text-slate-500 leading-snug" id="step3Desc">Clicking the button copies your auto-generated order message to your clipboard while opening Instagram DM for instant pasting!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Categories Area -->
+        <div class="space-y-3">
+            <div class="flex flex-wrap items-center gap-2" id="mainCategoriesBar"></div>
+            <div id="subCategoriesBar" class="hidden flex-wrap items-center gap-2 pl-2 pt-1 border-l-2 border-pink-300"></div>
+            <div id="sizeSubCategoriesBar" class="hidden flex-wrap items-center gap-2 pl-4 pt-1 border-l-2 border-pink-200"></div>
+
+            <div class="flex items-center justify-between text-xs font-bold text-slate-500 pt-2 px-1">
+                <span><span id="foundLabel">Found:</span> <strong id="productsCount" class="text-pink-600">0</strong> <span id="prodCountLabel">products</span></span>
+                <button onclick="resetAllFilters()" id="resetFiltersBtn" class="text-pink-500 hover:text-pink-700 underline cursor-pointer">
+                    Clear filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+
+        <!-- Empty State -->
+        <div id="noResultsState" class="hidden text-center py-16 px-4 bg-white rounded-3xl border border-pink-100 shadow-sm">
+            <div class="w-16 h-16 bg-pink-100/70 text-pink-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <i data-lucide="heart-crack" class="w-7 h-7"></i>
+            </div>
+            <h3 class="text-base font-extrabold text-slate-800 mb-1" id="noResultsTitle">No products found in this category</h3>
+            <p class="text-xs text-slate-500 mb-4 font-medium" id="noResultsSub">Try a different filter or clear your search query.</p>
+            <button onclick="resetAllFilters()" id="noResultsBtn" class="text-xs font-extrabold text-white gradient-pink px-4 py-2 rounded-full shadow-md shadow-pink-200">
+                View All
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-pink-100 mt-16 py-8 text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <img src="https://i.postimg.cc/BZKt14Zp/pinkcroissant-LOGO.jpg" alt="Logo" class="w-8 h-8 rounded-full border border-pink-200 object-contain" onerror="this.src='https://placehold.co/40x40/feeef4/e84880?text=PC'">
+                <p class="font-bold text-slate-700" id="footerText">© 2026 Pink Croissant. Handmade Creations.</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1.5 text-pink-600 font-extrabold cursor-pointer hover:underline" onclick="toggleSettingsModal(true)">
+                    <i data-lucide="instagram" class="w-4 h-4"></i>
+                    <span id="footerIgDisplay">@thepinkcroissant_creations</span>
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PRODUCT DETAILS MODAL -->
+    <div id="productModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300">
+        <div id="productModalCard" class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-pink-100 transform scale-95 transition-all duration-300 relative">
+            
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-pink-50 rounded-full transition-colors z-10">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                
+                <!-- Left: Image Gallery & Thumbnails -->
+                <div class="space-y-3">
+                    <div class="relative w-full h-64 sm:h-72 bg-pink-50 rounded-2xl overflow-hidden border border-pink-100 flex items-center justify-center">
+                        <img id="modalMainImage" src="" alt="Product Detail" class="w-full h-full object-cover transition-all duration-300">
+                        <span id="modalBadge" class="hidden absolute top-3 left-3 bg-white/95 backdrop-blur-md text-pink-600 text-xs font-black px-3 py-1 rounded-full shadow-xs border border-pink-100"></span>
+                    </div>
+                    <div id="modalThumbnails" class="flex items-center gap-2 overflow-x-auto pb-1"></div>
+                </div>
+
+                <!-- Right: Product Info, Details & Quantity -->
+                <div class="flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                            <span id="modalCategoryBadge" class="text-[11px] font-black text-pink-600 uppercase tracking-wider bg-pink-50 px-2.5 py-0.5 rounded-md border border-pink-100"></span>
+                            <span id="modalSizeBadge" class="text-[11px] font-bold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-md hidden"></span>
+                            <span id="modalAvailabilityBadge" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-md border flex items-center gap-1"></span>
+                        </div>
+                        <h3 id="modalTitle" class="text-xl sm:text-2xl font-black text-slate-900 leading-snug"></h3>
+                        <div class="text-2xl font-black text-pink-600 mt-2" id="modalPrice"></div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="border-t border-b border-pink-100 py-3.5 space-y-2">
+                        <h4 class="text-xs font-black text-slate-700 uppercase tracking-wider flex items-center gap-1.5" id="modalDescHeader">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-400"></i> Description & Details
+                        </h4>
+                        <p id="modalDesc" class="text-xs text-slate-600 leading-relaxed font-medium"></p>
+                        
+                        <ul class="space-y-1 text-xs text-slate-500 font-semibold pt-1">
+                            <li class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-pink-500"></i> <span>100% handmade creations</span></li>
+                            <li class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-pink-500"></i> <span>Hypoallergenic quality materials</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Quantity Selector & Action Button -->
+                    <div class="space-y-3 pt-1">
+                        <div class="flex items-center justify-between" id="modalQuantityRow">
+                            <span class="text-xs font-black text-slate-700">Quantity:</span>
+                            <div class="flex items-center bg-pink-50/70 border border-pink-200 rounded-xl shadow-xs p-1">
+                                <button onclick="changeModalQuantity(-1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-pink-600 hover:bg-white rounded-lg transition-colors font-black">
+                                    <i data-lucide="minus" class="w-4 h-4"></i>
+                                </button>
+                                <span id="modalQuantityDisplay" class="text-sm font-black px-4 text-slate-900">1</span>
+                                <button onclick="changeModalQuantity(1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-pink-600 hover:bg-white rounded-lg transition-colors font-black">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs text-slate-500 font-bold px-1" id="modalTotalRow">
+                            <span>Total Cost:</span>
+                            <span id="modalTotalPrice" class="text-sm font-black text-slate-900">€0.00</span>
+                        </div>
+
+                        <button id="modalAddToCartBtn" class="w-full gradient-pink hover:brightness-105 text-white py-3 px-5 rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-pink-200 active:scale-[0.98] transition-all">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            <span id="modalAddToCartBtnText">Add to Cart</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CART SLIDE-OVER DRAWER -->
+    <div id="cartDrawerBackdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="toggleCartDrawer(false)"></div>
+    <div id="cartDrawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+        
+        <div class="p-5 border-b border-pink-100 flex items-center justify-between bg-pink-50/50">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl gradient-pink flex items-center justify-center text-white shadow-sm shadow-pink-200">
+                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-slate-900 text-lg" id="cartDrawerTitle">My Cart</h3>
+                    <p class="text-xs text-pink-600 font-bold" id="cartSummaryHeader">0 items selected</p>
+                </div>
+            </div>
+            <button onclick="toggleCartDrawer(false)" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-pink-100 rounded-full transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-5 space-y-3.5"></div>
+
+        <div id="cartFooter" class="p-5 border-t border-pink-100 bg-[#fffbfc] space-y-3.5">
+            <div class="bg-white p-3.5 rounded-2xl border border-pink-200/80 shadow-xs space-y-2.5">
+                <div class="flex items-center justify-between text-xs font-black text-slate-700">
+                    <span class="flex items-center gap-1.5 text-pink-600">
+                        <i data-lucide="user" class="w-3.5 h-3.5"></i> DM Information (Optional)
+                    </span>
+                </div>
+                <div class="space-y-2 text-xs">
+                    <input type="text" id="custName" placeholder="Full Name" 
+                           class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-pink-400 focus:outline-none">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="tel" id="custPhone" placeholder="Phone Number" 
+                               class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-pink-400 focus:outline-none">
+                        <input type="text" id="custCity" placeholder="City" 
+                               class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-pink-400 focus:outline-none">
+                    </div>
+                    <input type="text" id="custNotes" placeholder="Notes (e.g. favorite color, size, gift wrap)" 
+                           class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-pink-400 focus:outline-none">
+                </div>
+            </div>
+
+            <div class="space-y-1.5 pt-1">
+                <div class="flex justify-between text-xs font-bold text-slate-500">
+                    <span>Subtotal</span>
+                    <span id="subtotalPrice" class="text-slate-800 font-extrabold">€0.00</span>
+                </div>
+                <div class="flex justify-between text-xs font-bold text-slate-500">
+                    <span>Shipping</span>
+                    <span class="text-pink-600">Arranged via DM</span>
+                </div>
+                <div class="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-pink-100">
+                    <span>Total Order</span>
+                    <span id="totalPrice" class="text-xl text-pink-600">€0.00</span>
+                </div>
+            </div>
+
+            <div class="space-y-2 pt-1">
+                <button onclick="sendOrderViaInstagram()" 
+                        class="w-full gradient-pink hover:brightness-105 text-white py-3 px-4 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-pink-300/40 transition-all active:scale-[0.98]">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    <span>Send Order Request via Instagram DM</span>
+                </button>
+                <button onclick="copyOrderMessage()" 
+                        class="w-full bg-white hover:bg-pink-50 text-slate-700 border border-pink-200 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-colors">
+                    <i data-lucide="copy" class="w-3.5 h-3.5 text-pink-500"></i>
+                    <span>Copy Order Message</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-200">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-pink-100 transform scale-95 transition-transform duration-200" id="settingsModalCard">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl gradient-pink flex items-center justify-center text-white">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-black text-slate-900">Instagram Settings</h4>
+                </div>
+                <button onclick="toggleSettingsModal(false)" class="text-slate-400 hover:text-slate-600 p-1 rounded-full">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-500 mb-4 font-medium leading-relaxed">
+                Set the Instagram username where order DMs will be directed.
+            </p>
+
+            <div class="mb-5">
+                <label class="block text-xs font-black text-slate-700 mb-1.5">Instagram Username (@)</label>
+                <div class="relative">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-pink-400 font-black text-sm">@</span>
+                    <input type="text" id="igHandleInput" class="w-full bg-pink-50/50 border border-pink-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-pink-300 focus:outline-none" placeholder="thepinkcroissant_creations">
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="toggleSettingsModal(false)" class="flex-1 py-2.5 rounded-xl border border-pink-200 text-xs font-bold text-slate-600 hover:bg-pink-50">
+                    Cancel
+                </button>
+                <button onclick="saveInstagramHandle()" class="flex-1 gradient-pink text-white py-2.5 rounded-xl text-xs font-bold shadow-md shadow-pink-200 hover:brightness-105">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-extrabold transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300">
+        <i data-lucide="check" class="w-4 h-4 text-pink-400" id="toastIcon"></i>
+        <span id="toastMessage">Item added to cart!</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
         let instagramHandle = 'thepinkcroissant_creations';
         let currentMainCategory = 'all';
@@ -31,12 +440,12 @@
                     isOutOfStock: false
                 };
             } else {
-                const countText = `(${product.stock || 1} pcs)`;
+                const countText = '(' + (product.stock || 1) + ' pcs)';
                 return {
                     class: 'bg-emerald-50 text-emerald-700 border-emerald-200',
                     dotClass: 'bg-emerald-500',
                     icon: 'check-circle',
-                    label: `In Stock ${countText}`,
+                    label: 'In Stock ' + countText,
                     isOutOfStock: false
                 };
             }
@@ -194,6 +603,7 @@
             }
         ];
 
+        // Categories (English only)
         const mainCategories = [
             { id: 'all', name: 'All', icon: 'sparkles' },
             { id: 'knitted', name: 'Knitted Items', icon: 'heart' },
@@ -214,6 +624,7 @@
             { id: 'large', name: 'Large' }
         ];
 
+        // Safe Initialization
         function initApp() {
             updateIgHandleDisplays();
             renderCategoryFilters();
@@ -486,7 +897,7 @@
 
             if (mainImg) mainImg.src = product.image;
             if (title) title.innerText = product.name;
-            if (price) price.innerText = `€${product.price.toFixed(2)}`;
+            if (price) price.innerText = '€' + product.price.toFixed(2);
             if (desc) desc.innerText = product.desc;
 
             const catObj = mainCategories.find(c => c.id === product.mainCategory);
@@ -512,8 +923,8 @@
 
             const avail = getAvailabilityBadgeData(product);
             if (availBadge) {
-                availBadge.className = `text-[11px] font-extrabold px-2.5 py-0.5 rounded-md border flex items-center gap-1.5 ${avail.class}`;
-                availBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${avail.dotClass}"></span> <span>${avail.label}</span>`;
+                availBadge.className = 'text-[11px] font-extrabold px-2.5 py-0.5 rounded-md border flex items-center gap-1.5 ' + avail.class;
+                availBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full ' + avail.dotClass + '"></span> <span>' + avail.label + '</span>';
             }
 
             if (avail.isOutOfStock) {
@@ -584,7 +995,7 @@
             if (activeProductQty < 1) activeProductQty = 1;
             if (activeProduct.availabilityStatus === 'in_stock' && activeProductQty > maxStock) {
                 activeProductQty = maxStock;
-                showToast(`Max available stock: ${maxStock} items`);
+                showToast('Max available stock: ' + maxStock + ' items');
             }
             updateModalQtyDisplay();
         }
@@ -595,7 +1006,7 @@
             if (disp) disp.innerText = activeProductQty;
             if (activeProduct && totalDisp) {
                 const total = (activeProduct.price * activeProductQty).toFixed(2);
-                totalDisp.innerText = `€${total}`;
+                totalDisp.innerText = '€' + total;
             }
         }
 
@@ -637,7 +1048,7 @@
             }
 
             renderCart();
-            showToast(`Added: ${quantity}x "${product.name}" 🌸`);
+            showToast('Added: ' + quantity + 'x "' + product.name + '" 🌸');
         }
 
         function updateQuantity(productId, delta) {
@@ -665,14 +1076,14 @@
 
             const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
             if (badge) badge.innerText = totalItemsCount;
-            if (summaryHeader) summaryHeader.innerText = `${totalItemsCount} ${totalItemsCount === 1 ? 'item' : 'items'} selected`;
+            if (summaryHeader) summaryHeader.innerText = totalItemsCount + (totalItemsCount === 1 ? ' item' : ' items') + ' selected';
 
             const totalPrice = cart.reduce((sum, item) => {
                 const prod = products.find(p => p.id === item.id);
                 return sum + ((prod ? prod.price : item.price) * item.quantity);
             }, 0);
 
-            const formattedTotal = `€${totalPrice.toFixed(2)}`;
+            const formattedTotal = '€' + totalPrice.toFixed(2);
             if (subtotalElem) subtotalElem.innerText = formattedTotal;
             if (totalElem) totalElem.innerText = formattedTotal;
 
@@ -698,7 +1109,7 @@
             container.innerHTML = cart.map(item => {
                 const product = products.find(p => p.id === item.id);
                 const name = product ? product.name : 'Item';
-                const sizeLabel = product && product.sizeLabel ? ` (${product.sizeLabel})` : '';
+                const sizeLabel = product && product.sizeLabel ? ' (' + product.sizeLabel + ')' : '';
 
                 return `
                 <div class="flex items-center gap-3 bg-pink-50/50 p-3 rounded-2xl border border-pink-100">
@@ -784,7 +1195,7 @@
             instagramHandle = val;
             updateIgHandleDisplays();
             toggleSettingsModal(false);
-            showToast(`Instagram @${instagramHandle} ✨`);
+            showToast('Instagram @' + instagramHandle + ' ✨');
         }
 
         // Generate Order Text (Clean safe strings)
@@ -812,17 +1223,19 @@
                 const prod = products.find(p => p.id === item.id);
                 const prodName = prod ? prod.name : 'Item';
                 const itemTotal = (item.price * item.quantity).toFixed(2);
-                lines.push(`${index + 1}. ${prodName}\n   └ Qty: ${item.quantity} x €${item.price.toFixed(2)} = €${itemTotal}`);
+                lines.push((index + 1) + '. ' + prodName + '\n   └ Qty: ' + item.quantity + ' x €' + item.price.toFixed(2) + ' = €' + itemTotal);
             });
 
             lines.push('------------------------------------');
-            lines.push(`💰 *TOTAL:* €${totalPrice}\n`);
+            lines.push('💰 *TOTAL:* €' + totalPrice);
+            lines.push('');
             lines.push('👤 *CUSTOMER INFO:*');
-            lines.push(`• Name: ${name}`);
-            lines.push(`• Phone: ${phone}`);
-            lines.push(`• City: ${city}`);
-            if (notes !== '-') lines.push(`• Notes: ${notes}`);
-            lines.push('\nHello! I would love to order the items above. Please let me know regarding availability and payment methods. Thank you so much! 🌸✨');
+            lines.push('• Name: ' + name);
+            lines.push('• Phone: ' + phone);
+            lines.push('• City: ' + city);
+            if (notes !== '-') lines.push('• Notes: ' + notes);
+            lines.push('');
+            lines.push('Hello! I would love to order the items above. Please let me know regarding availability and payment methods. Thank you so much! 🌸✨');
 
             return lines.join('\n');
         }
@@ -863,7 +1276,7 @@
 
             copyOrderMessage(true);
 
-            const igDirectUrl = `https://ig.me/m/${instagramHandle}`;
+            const igDirectUrl = 'https://ig.me/m/' + instagramHandle;
             showToast('Copied! Opening Instagram DM... 💌', 2500);
 
             setTimeout(() => {
@@ -890,3 +1303,5 @@
             }, duration);
         }
     </script>
+</body>
+</html>
