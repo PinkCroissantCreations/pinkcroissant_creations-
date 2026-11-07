@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink Croissant | Cute Handmade & Knitted Studio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff9fb',
+                            100: '#feeef4',
+                            200: '#fdd9e6',
+                            300: '#fbb3ce',
+                            400: '#f4729f',
+                            500: '#e84880',
+                            600: '#db2777',
+                            700: '#be185d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Nunito', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & Lucide Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Nunito', sans-serif; }
+        .gradient-pink {
+            background: linear-gradient(135deg, #fbb3ce 0%, #f4729f 50%, #db2777 100%);
+        }
+        .gradient-soft-pink {
+            background: linear-gradient(180deg, #fff5f8 0%, #fff9fb 100%);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fff1f5; }
+        ::-webkit-scrollbar-thumb { background: #fbb3ce; border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f4729f; }
+    </style>
+</head>
+<body class="bg-[#fff9fb] text-slate-800 antialiased min-h-screen flex flex-col selection:bg-pink-200 selection:text-pink-800">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white text-xs py-2 px-4 text-center font-bold flex items-center justify-center gap-2 shadow-sm">
+        <span id="announcementText">🥐 Χειροποίητες δημιουργίες γεμάτες αγάπη! · Παραγγελίες απευθείας στο Instagram DM μας 💌</span>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-pink-100 transition-all shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Brand Logo (Top Left) -->
+            <div class="flex items-center gap-3.5 cursor-pointer group" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div class="relative w-14 h-14 rounded-2xl p-1 bg-white border border-pink-200 shadow-sm shadow-pink-100 group-hover:scale-105 transition-transform flex items-center justify-center overflow-hidden">
+                    <img src="https://i.postimg.cc/BZKt14Zp/pinkcroissant-LOGO.jpg" alt="Pink Croissant Logo" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/120x120/feeef4/e84880?text=Pink+Croissant'">
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 group-hover:text-pink-600 transition-colors">
+                        Pink Croissant <span class="inline-block text-pink-400 text-sm">✨</span>
+                    </h1>
+                    <p class="text-xs text-pink-500 font-bold flex items-center gap-1">
+                        <i data-lucide="instagram" class="w-3.5 h-3.5"></i>
+                        <span id="headerIgDisplay">@thepinkcroissant_creations</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Search Bar (Desktop) -->
+            <div class="hidden md:flex items-center flex-1 max-w-md mx-6">
+                <div class="relative w-full">
+                    <i data-lucide="search" class="w-4 h-4 text-pink-300 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" id="searchInputDesktop" placeholder="Αναζήτηση..." 
+                           class="w-full bg-pink-50/60 border border-pink-200 text-sm rounded-full pl-11 pr-4 py-2.5 text-slate-700 placeholder-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 transition-all"
+                           oninput="handleSearch(this.value)">
+                </div>
+            </div>
+
+            <!-- Actions: Language Toggle, Settings & Cart -->
+            <div class="flex items-center gap-2 sm:gap-2.5">
+                
+                <!-- Κουμπί Αλλαγής Γλώσσας -->
+                <button onclick="toggleLanguage()" 
+                        id="langToggleBtn"
+                        title="Change Language" 
+                        class="px-3 py-2 bg-pink-50 hover:bg-pink-100/80 text-pink-700 border border-pink-200 rounded-full transition-all flex items-center gap-1.5 text-xs font-black shadow-xs active:scale-95">
+                    <i data-lucide="languages" class="w-4 h-4 text-pink-500"></i>
+                    <span id="langLabel">🇬🇧 EN</span>
+                </button>
+
+                <button onclick="toggleSettingsModal(true)" 
+                        title="Ρυθμίσεις Instagram" 
+                        class="p-2.5 text-slate-500 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors flex items-center gap-1.5 text-xs font-bold">
+                    <i data-lucide="settings" class="w-4 h-4 text-pink-400"></i>
+                    <span class="hidden sm:inline">IG Handle</span>
+                </button>
+
+                <!-- Cart Button -->
+                <button onclick="toggleCartDrawer(true)" 
+                        class="relative flex items-center gap-2 gradient-pink hover:brightness-105 text-white px-4 sm:px-5 py-2.5 rounded-full font-bold shadow-md shadow-pink-300/40 transition-transform active:scale-95">
+                    <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                    <span class="hidden sm:inline text-sm" id="navCartLabel">Καλάθι</span>
+                    <span id="cartCountBadge" class="bg-white text-pink-600 text-xs font-black px-2.5 py-0.5 rounded-full shadow-sm">
+                        0
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Bar (Mobile) -->
+        <div class="p-3 border-t border-pink-100 md:hidden bg-white/90 px-4">
+            <div class="relative w-full">
+                <i data-lucide="search" class="w-4 h-4 text-pink-300 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="searchInputMobile" placeholder="Αναζήτηση..." 
+                       class="w-full bg-pink-50/50 border border-pink-200 text-sm rounded-full pl-10 pr-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-pink-300"
+                       oninput="handleSearch(this.value)">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        <!-- How To Order Banner (3 Steps) -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-100 via-[#feeef4] to-pink-50 border border-pink-200 p-6 sm:p-8 shadow-sm">
+            <div class="max-w-3xl mb-6">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-pink-200 text-pink-600 text-xs font-extrabold mb-3">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-500"></i>
+                    <span id="bannerTag">Απλό & Γρήγορο</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-2" id="bannerHeading">
+                    Πώς παραγγέλνεις με <span class="text-pink-600">3 απλά βήματα</span> 🌸
+                </h2>
+                <p class="text-sm text-slate-600 font-medium leading-relaxed" id="bannerSubheading">
+                    Διάλεξε ό,τι σου αρέσει, δες το σύνολο στο καλάθι και στείλε μας απευθείας μήνυμα στο Instagram με 1 κλικ!
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-pink-200/70 shadow-xs flex items-start gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center font-black text-base shrink-0">
+                        1
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-sm text-slate-900 mb-1" id="step1Title">Διάλεξε τα Προϊόντα που θες</h3>
+                        <p class="text-xs text-slate-500 leading-snug" id="step1Desc">Πάτα το προϊόν για να δεις παραπάνω λεπτομέρειες, διάλεξε ποσότητα και πρόσθεσέ το στο καλάθι.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-pink-200/70 shadow-xs flex items-start gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center font-black text-base shrink-0">
+                        2
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-sm text-slate-900 mb-1" id="step2Title">Έτοιμη Παραγγελία</h3>
+                        <p class="text-xs text-slate-500 leading-snug" id="step2Desc">Η λίστα με τα προϊόντα που σε ενδιαφέρουν δημιουργείται αυτόματα με αναλυτικές τιμές και λεπτομέρειες. Πατώντας το κουμπί "Καλάθι" μπορείς να την δεις!</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-pink-200/70 shadow-xs flex items-start gap-3.5">
+                    <div class="w-10 h-10 rounded-xl gradient-pink text-white flex items-center justify-center font-black text-base shrink-0 shadow-sm shadow-pink-300">
+                        3
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-sm text-slate-900 mb-1" id="step3Title">Αποστολή αιτήματος παραγγελίας ως μήνυμα στο Instagram</h3>
+                        <p class="text-xs text-slate-500 leading-snug" id="step3Desc">Πατώντας το κουμπί, αντιγράφεται το αυτόματο μήνυμα παραγγελίας με τα στοιχεία σου και τα προϊόντα που επέλεξες στο πρόχειρο, ενώ παράλληλα ανοίγει η συνομιλία (DM) στο Instagram για άμεση αποστολή του μηνύματος μέσω επικόλλησης!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Categories Area -->
+        <div class="space-y-3">
+            <div class="flex flex-wrap items-center gap-2" id="mainCategoriesBar"></div>
+            <div id="subCategoriesBar" class="hidden flex-wrap items-center gap-2 pl-2 pt-1 border-l-2 border-pink-300"></div>
+            <div id="sizeSubCategoriesBar" class="hidden flex-wrap items-center gap-2 pl-4 pt-1 border-l-2 border-pink-200"></div>
+
+            <div class="flex items-center justify-between text-xs font-bold text-slate-500 pt-2 px-1">
+                <span><span id="foundLabel">Βρέθηκαν:</span> <strong id="productsCount" class="text-pink-600">0</strong> <span id="prodCountLabel">προϊόντα</span></span>
+                <button onclick="resetAllFilters()" id="resetFiltersBtn" class="text-pink-500 hover:text-pink-700 underline cursor-pointer">
+                    Καθαρισμός φίλτρων
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+
+        <!-- Empty State -->
+        <div id="noResultsState" class="hidden text-center py-16 px-4 bg-white rounded-3xl border border-pink-100 shadow-sm">
+            <div class="w-16 h-16 bg-pink-100/70 text-pink-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <i data-lucide="heart-crack" class="w-7 h-7"></i>
+            </div>
+            <h3 class="text-base font-extrabold text-slate-800 mb-1" id="noResultsTitle">Δεν βρέθηκαν προϊόντα σε αυτή την κατηγορία</h3>
+            <p class="text-xs text-slate-500 mb-4 font-medium" id="noResultsSub">Δοκιμάστε διαφορετική επιλογή ή καθαρίστε την αναζήτηση.</p>
+            <button onclick="resetAllFilters()" id="noResultsBtn" class="text-xs font-extrabold text-white gradient-pink px-4 py-2 rounded-full shadow-md shadow-pink-200">
+                Προβολή Όλων
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-pink-100 mt-16 py-8 text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <img src="https://i.postimg.cc/BZKt14Zp/pinkcroissant-LOGO.jpg" alt="Logo" class="w-8 h-8 rounded-full border border-pink-200 object-contain" onerror="this.src='https://placehold.co/40x40/feeef4/e84880?text=PC'">
+                <p class="font-bold text-slate-700" id="footerText">© 2026 Pink Croissant. Χειροποίητες δημιουργίες.</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1.5 text-pink-600 font-extrabold cursor-pointer hover:underline" onclick="toggleSettingsModal(true)">
+                    <i data-lucide="instagram" class="w-4 h-4"></i>
+                    <span id="footerIgDisplay">@thepinkcroissant_creations</span>
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PRODUCT DETAILS MODAL -->
+    <div id="productModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300">
+        <div id="productModalCard" class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-pink-100 transform scale-95 transition-all duration-300 relative">
+            
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-pink-50 rounded-full transition-colors z-10">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                
+                <!-- Left: Image Gallery & Thumbnails -->
+                <div class="space-y-3">
+                    <div class="relative w-full h-64 sm:h-72 bg-pink-50 rounded-2xl overflow-hidden border border-pink-100 flex items-center justify-center">
+                        <img id="modalMainImage" src="" alt="Product Detail" class="w-full h-full object-cover transition-all duration-300">
+                        <span id="modalBadge" class="hidden absolute top-3 left-3 bg-white/95 backdrop-blur-md text-pink-600 text-xs font-black px-3 py-1 rounded-full shadow-xs border border-pink-100"></span>
+                    </div>
+                    <div id="modalThumbnails" class="flex items-center gap-2 overflow-x-auto pb-1"></div>
+                </div>
+
+                <!-- Right: Product Info, Details & Quantity -->
+                <div class="flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                            <span id="modalCategoryBadge" class="text-[11px] font-black text-pink-600 uppercase tracking-wider bg-pink-50 px-2.5 py-0.5 rounded-md border border-pink-100"></span>
+                            <span id="modalSizeBadge" class="text-[11px] font-bold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-md hidden"></span>
+                            <span id="modalAvailabilityBadge" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-md border flex items-center gap-1"></span>
+                        </div>
+                        <h3 id="modalTitle" class="text-xl sm:text-2xl font-black text-slate-900 leading-snug"></h3>
+                        <div class="text-2xl font-black text-pink-600 mt-2" id="modalPrice"></div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="border-t border-b border-pink-100 py-3.5 space-y-2">
+                        <h4 class="text-xs font-black text-slate-700 uppercase tracking-wider flex items-center gap-1.5" id="modalDescHeader">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-400"></i> Περιγραφή & Λεπτομέρειες
+                        </h4>
+                        <p id="modalDesc" class="text-xs text-slate-600 leading-relaxed font-medium"></p>
+                        
+                        <ul class="space-y-1 text-xs text-slate-500 font-semibold pt-1">
+                            <li class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-pink-500"></i> <span id="feat1">100% χειροποίητη κατασκευή</span></li>
+                            <li class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-pink-500"></i> <span id="feat2">Υποαλλεργικά ποιοτικά υλικά</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Quantity Selector & Action Button -->
+                    <div class="space-y-3 pt-1">
+                        <div class="flex items-center justify-between" id="modalQuantityRow">
+                            <span class="text-xs font-black text-slate-700" id="modalQtyLabel">Ποσότητα:</span>
+                            <div class="flex items-center bg-pink-50/70 border border-pink-200 rounded-xl shadow-xs p-1">
+                                <button onclick="changeModalQuantity(-1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-pink-600 hover:bg-white rounded-lg transition-colors font-black">
+                                    <i data-lucide="minus" class="w-4 h-4"></i>
+                                </button>
+                                <span id="modalQuantityDisplay" class="text-sm font-black px-4 text-slate-900">1</span>
+                                <button onclick="changeModalQuantity(1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-pink-600 hover:bg-white rounded-lg transition-colors font-black">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs text-slate-500 font-bold px-1" id="modalTotalRow">
+                            <span id="modalTotalCostLabel">Συνολικό κόστος:</span>
+                            <span id="modalTotalPrice" class="text-sm font-black text-slate-900">€0.00</span>
+                        </div>
+
+                        <button id="modalAddToCartBtn" class="w-full gradient-pink hover:brightness-105 text-white py-3 px-5 rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-pink-200 active:scale-[0.98] transition-all">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            <span id="modalAddToCartBtnText">Προσθήκη στο Καλάθι</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CART SLIDE-OVER DRAWER -->
+    <div id="cartDrawerBackdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="toggleCartDrawer(false)"></div>
+    <div id="cartDrawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+        
+        <div class="p-5 border-b border-pink-100 flex items-center justify-between bg-pink-50/50">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl gradient-pink flex items-center justify-center text-white shadow-sm shadow-pink-200">
+                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-slate-900 text-lg" id="cartDrawerTitle">Το Καλάθι μου</h3>
+                    <p class="text-xs text-pink-600 font-bold" id="cartSummaryHeader">0 προϊόντα επιλεγμένα</p>
+                </div>
+            </div>
+            <button onclick="toggleCartDrawer(false)" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-pink-100 rounded-full transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-5 space-y-3.5"></div>
+
+        <div id="cartFooter" class="p-5 border-t border-pink-100 bg-[#fffbfc] space-y-3.5">
+            <div class="bg-white p-3.5 rounded-2xl border border-pink-200/80 shadow-xs space-y-2.5">
+                <div class="flex items-center justify-between text-xs font-black text-slate-700">
+                    <span class="flex items-center gap-1.5 text-pink-600" id="dmDetailsLabel">
+                        <i data-lucide="user" class="w-3.5 h-3.5"></i> Στοιχεία για το DM (Προαιρετικά)
+                    </span>
+                </div>
+                <div class="space-y-2 text-xs">
+                    <input type="text" id="custName" placeholder="Ονοματεπώνυμο" 
+                           class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-pink-400 focus:outline-none">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="tel" id="custPhone" placeholder="Τηλέφωνο" 
+                               class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-pink-400 focus:outline-none">
+                        <input type="text" id="custCity" placeholder="Πόλη" 
+                               class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-pink-400 focus:outline-none">
+                    </div>
+                    <input type="text" id="custNotes" placeholder="Σημειώσεις (π.χ. αγαπημένο χρώμα, μέγεθος, δώρο)" 
+                           class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:ring-1 focus:ring-pink-400 focus:outline-none">
+                </div>
+            </div>
+
+            <div class="space-y-1.5 pt-1">
+                <div class="flex justify-between text-xs font-bold text-slate-500">
+                    <span id="subtotalLabel">Μερικό Σύνολο</span>
+                    <span id="subtotalPrice" class="text-slate-800 font-extrabold">€0.00</span>
+                </div>
+                <div class="flex justify-between text-xs font-bold text-slate-500">
+                    <span id="shippingLabel">Μεταφορικά</span>
+                    <span class="text-pink-600" id="shippingValue">Κατόπιν συνεννόησης</span>
+                </div>
+                <div class="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-pink-100">
+                    <span id="totalOrderLabel">Σύνολο Παραγγελίας</span>
+                    <span id="totalPrice" class="text-xl text-pink-600">€0.00</span>
+                </div>
+            </div>
+
+            <div class="space-y-2 pt-1">
+                <button onclick="sendOrderViaInstagram()" 
+                        class="w-full gradient-pink hover:brightness-105 text-white py-3 px-4 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-pink-300/40 transition-all active:scale-[0.98]">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    <span id="sendOrderBtnText">Αποστολή αιτήματος παραγγελίας στο Instagram DM</span>
+                </button>
+                <button onclick="copyOrderMessage()" 
+                        class="w-full bg-white hover:bg-pink-50 text-slate-700 border border-pink-200 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-colors">
+                    <i data-lucide="copy" class="w-3.5 h-3.5 text-pink-500"></i>
+                    <span id="copyOrderBtnText">Αντιγραφή Κειμένου Παραγγελίας</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-200">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-pink-100 transform scale-95 transition-transform duration-200" id="settingsModalCard">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl gradient-pink flex items-center justify-center text-white">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </div>
+                    <h4 class="font-black text-slate-900">Ρύθμιση Instagram</h4>
+                </div>
+                <button onclick="toggleSettingsModal(false)" class="text-slate-400 hover:text-slate-600 p-1 rounded-full">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-500 mb-4 font-medium leading-relaxed">
+                Ορίστε το Instagram username στο οποίο θα ανοίγουν τα DMs των παραγγελιών.
+            </p>
+
+            <div class="mb-5">
+                <label class="block text-xs font-black text-slate-700 mb-1.5">Instagram Username (@)</label>
+                <div class="relative">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-pink-400 font-black text-sm">@</span>
+                    <input type="text" id="igHandleInput" class="w-full bg-pink-50/50 border border-pink-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-pink-300 focus:outline-none" placeholder="thepinkcroissant_creations">
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="toggleSettingsModal(false)" class="flex-1 py-2.5 rounded-xl border border-pink-200 text-xs font-bold text-slate-600 hover:bg-pink-50">
+                    Ακύρωση
+                </button>
+                <button onclick="saveInstagramHandle()" class="flex-1 gradient-pink text-white py-2.5 rounded-xl text-xs font-bold shadow-md shadow-pink-200 hover:brightness-105">
+                    Αποθήκευση
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-extrabold transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300">
+        <i data-lucide="check" class="w-4 h-4 text-pink-400" id="toastIcon"></i>
+        <span id="toastMessage">Το προϊόν προστέθηκε στο καλάθι!</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC & TRANSLATIONS -->
+    <script>
+        let currentLang = 'el'; // 'el' | 'en'
+        let instagramHandle = 'thepinkcroissant_creations';
+        let currentMainCategory = 'all';
+        let currentSubCategory = 'all';
+        let currentBearSize = 'all';
+        let searchQuery = '';
+        let cart = [];
+
+        let activeProduct = null;
+        let activeProductQty = 1;
+
+        // ΛΕΞΙΚΟ ΣΤΑΘΕΡΩΝ ΣΤΟΙΧΕΙΩΝ UI
+        const i18n = {
+            el: {
+                announcement: "🥐 Χειροποίητες δημιουργίες γεμάτες αγάπη! · Παραγγελίες απευθείας στο Instagram DM μας 💌",
+                searchPlaceholder: "Αναζήτηση...",
+                cart: "Καλάθι",
+                bannerTag: "Απλό & Γρήγορο",
+                bannerHeading: "Πώς παραγγέλνεις με <span class='text-pink-600'>3 απλά βήματα</span> 🌸",
+                bannerSubheading: "Διάλεξε ό,τι σου αρέσει, δες το σύνολο στο καλάθι και στείλε μας απευθείας μήνυμα στο Instagram με 1 κλικ!",
+                step1Title: "Διάλεξε τα Προϊόντα που θες",
+                step1Desc: "Πάτα το προϊόν για να δεις παραπάνω λεπτομέρειες, διάλεξε ποσότητα και πρόσθεσέ το στο καλάθι.",
+                step2Title: "Έτοιμη Παραγγελία",
+                step2Desc: "Η λίστα με τα προϊόντα που σε ενδιαφέρουν δημιουργείται αυτόματα με αναλυτικές τιμές και λεπτομέρειες. Πατώντας το κουμπί 'Καλάθι' μπορείς να την δεις!",
+                step3Title: "Αποστολή αιτήματος παραγγελίας ως μήνυμα στο Instagram",
+                step3Desc: "Πατώντας το κουμπί, αντιγράφεται το αυτόματο μήνυμα παραγγελίας με τα στοιχεία σου και τα προϊόντα που επέλεξες στο πρόχειρο, ενώ παράλληλα ανοίγει η συνομιλία (DM) στο Instagram για άμεση αποστολή του μηνύματος μέσω επικόλλησης!",
+                found: "Βρέθηκαν:",
+                prodCount: "προϊόντα",
+                resetFilters: "Καθαρισμός φίλτρων",
+                noResultsTitle: "Δεν βρέθηκαν προϊόντα σε αυτή την κατηγορία",
+                noResultsSub: "Δοκιμάστε διαφορετική επιλογή ή καθαρίστε την αναζήτηση.",
+                viewAll: "Προβολή Όλων",
+                footer: "© 2026 Pink Croissant. Χειροποίητες δημιουργίες.",
+                details: "Λεπτομέρειες",
+                price: "Τιμή",
+                add: "Προσθήκη",
+                outOfStock: "Εξαντλημένο",
+                inStock: "Άμεσα Διαθέσιμο",
+                madeToOrder: "Κατόπιν Παραγγελίας",
+                subCatLabel: "Υποκατηγορία:",
+                sizeLabel: "Μέγεθος:",
+                modalDescHeader: "Περιγραφή & Λεπτομέρειες",
+                feat1: "100% χειροποίητη κατασκευή",
+                feat2: "Υποαλλεργικά ποιοτικά υλικά",
+                modalQty: "Ποσότητα:",
+                modalTotal: "Συνολικό κόστος:",
+                addToCart: "Προσθήκη στο Καλάθι",
+                myCart: "Το Καλάθι μου",
+                emptyCart: "Το καλάθι σου είναι άδειο",
+                emptyCartSub: "Επίλεξε πλεκτά, αρκουδάκια ή ζωγραφιές για να ξεκινήσεις την παραγγελία σου!",
+                backToProducts: "Πίσω στα προϊόντα",
+                dmDetails: "Στοιχεία για το DM (Προαιρετικά)",
+                namePlaceholder: "Ονοματεπώνυμο",
+                phonePlaceholder: "Τηλέφωνο",
+                cityPlaceholder: "Πόλη",
+                notesPlaceholder: "Σημειώσεις (π.χ. αγαπημένο χρώμα, μέγεθος, δώρο)",
+                subtotal: "Μερικό Σύνολο",
+                shipping: "Μεταφορικά",
+                shippingVal: "Κατόπιν συνεννόησης",
+                totalOrder: "Σύνολο Παραγγελίας",
+                orderInstagram: "Αποστολή αιτήματος παραγγελίας στο Instagram DM",
+                copyOrder: "Αντιγραφή Κειμένου Παραγγελίας",
+                orderCopied: "Η παραγγελία αντιγράφηκε επιτυχώς! 📋",
+                openingIg: "Αντιγράφηκε! Ανοίγει το Instagram DM... 💌",
+                addMoreItems: "Προσθέστε πρώτα προϊόντα στο καλάθι!"
+            },
+            en: {
+                announcement: "🥐 Handmade creations made with love! · Orders directly via our Instagram DMs 💌",
+                searchPlaceholder: "Search...",
+                cart: "Cart",
+                bannerTag: "Simple & Fast",
+                bannerHeading: "How to order in <span class='text-pink-600'>3 simple steps</span> 🌸",
+                bannerSubheading: "Choose what you love, see the cart total, and send us a direct message on Instagram in 1 click!",
+                step1Title: "Choose Your Items",
+                step1Desc: "Click on the item to see more details, select quantity, and add it to your cart.",
+                step2Title: "Order Ready",
+                step2Desc: "The summary of the products you want is automatically created with full pricing. Tap the 'Cart' button to see it!",
+                step3Title: "Send Order Request via Instagram DM",
+                step3Desc: "Clicking the button copies your auto-generated order message to your clipboard while opening Instagram DM for instant pasting!",
+                found: "Found:",
+                prodCount: "products",
+                resetFilters: "Clear filters",
+                noResultsTitle: "No products found in this category",
+                noResultsSub: "Try a different filter or clear your search query.",
+                viewAll: "View All",
+                footer: "© 2026 Pink Croissant. Handmade Creations.",
+                details: "Details",
+                price: "Price",
+                add: "Add to cart",
+                outOfStock: "Sold Out",
+                inStock: "In Stock",
+                madeToOrder: "Made to Order",
+                subCatLabel: "Subcategory:",
+                sizeLabel: "Size:",
+                modalDescHeader: "Description & Details",
+                feat1: "100% handmade creations",
+                feat2: "Hypoallergenic quality materials",
+                modalQty: "Quantity:",
+                modalTotal: "Total Cost:",
+                addToCart: "Add to Cart",
+                myCart: "My Cart",
+                emptyCart: "Your cart is empty",
+                emptyCartSub: "Choose some knitted goods, bears or art to get started!",
+                backToProducts: "Back to products",
+                dmDetails: "DM Information (Optional)",
+                namePlaceholder: "Full Name",
+                phonePlaceholder: "Phone Number",
+                cityPlaceholder: "City",
+                notesPlaceholder: "Notes (e.g. favorite color, size, gift wrap)",
+                subtotal: "Subtotal",
+                shipping: "Shipping",
+                shippingVal: "Arranged via DM",
+                totalOrder: "Total Order",
+                orderInstagram: "Send Order Request via Instagram DM",
+                copyOrder: "Copy Order Message",
+                orderCopied: "Order copied to clipboard! 📋",
+                openingIg: "Copied! Opening Instagram DM... 💌",
+                addMoreItems: "Please add products to your cart first!"
+            }
+        };
+
+        // Εναλλαγή Γλώσσας
+        function toggleLanguage() {
+            currentLang = currentLang === 'el' ? 'en' : 'el';
+            document.getElementById('langLabel').innerText = currentLang === 'el' ? '🇬🇧 EN' : '🇬🇷 EL';
+            applyTranslations();
+            renderCategoryFilters();
+            renderProducts();
+            renderCart();
+            if (activeProduct) {
+                openProductModal(activeProduct.id);
+            }
+            showToast(currentLang === 'el' ? 'Γλώσσα: Ελληνικά 🇬🇷' : 'Language: English 🇬🇧');
+        }
+
+        function applyTranslations() {
+            const t = i18n[currentLang];
+            document.getElementById('announcementText').innerText = t.announcement;
+            document.getElementById('searchInputDesktop').placeholder = t.searchPlaceholder;
+            document.getElementById('searchInputMobile').placeholder = t.searchPlaceholder;
+            document.getElementById('navCartLabel').innerText = t.cart;
+            document.getElementById('bannerTag').innerText = t.bannerTag;
+            document.getElementById('bannerHeading').innerHTML = t.bannerHeading;
+            document.getElementById('bannerSubheading').innerText = t.bannerSubheading;
+            document.getElementById('step1Title').innerText = t.step1Title;
+            document.getElementById('step1Desc').innerText = t.step1Desc;
+            document.getElementById('step2Title').innerText = t.step2Title;
+            document.getElementById('step2Desc').innerText = t.step2Desc;
+            document.getElementById('step3Title').innerText = t.step3Title;
+            document.getElementById('step3Desc').innerText = t.step3Desc;
+            document.getElementById('foundLabel').innerText = t.found;
+            document.getElementById('prodCountLabel').innerText = t.prodCount;
+            document.getElementById('resetFiltersBtn').innerText = t.resetFilters;
+            document.getElementById('noResultsTitle').innerText = t.noResultsTitle;
+            document.getElementById('noResultsSub').innerText = t.noResultsSub;
+            document.getElementById('noResultsBtn').innerText = t.viewAll;
+            document.getElementById('footerText').innerText = t.footer;
+            document.getElementById('cartDrawerTitle').innerText = t.myCart;
+            document.getElementById('custName').placeholder = t.namePlaceholder;
+            document.getElementById('custPhone').placeholder = t.phonePlaceholder;
+            document.getElementById('custCity').placeholder = t.cityPlaceholder;
+            document.getElementById('custNotes').placeholder = t.notesPlaceholder;
+            document.getElementById('subtotalLabel').innerText = t.subtotal;
+            document.getElementById('shippingLabel').innerText = t.shipping;
+            document.getElementById('shippingValue').innerText = t.shippingVal;
+            document.getElementById('totalOrderLabel').innerText = t.totalOrder;
+            document.getElementById('sendOrderBtnText').innerText = t.orderInstagram;
+            document.getElementById('copyOrderBtnText').innerText = t.copyOrder;
+            document.getElementById('modalDescHeader').innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-400"></i> ${t.modalDescHeader}`;
+            document.getElementById('feat1').innerText = t.feat1;
+            document.getElementById('feat2').innerText = t.feat2;
+            document.getElementById('modalQtyLabel').innerText = t.modalQty;
+            document.getElementById('modalTotalCostLabel').innerText = t.modalTotal;
+            lucide.createIcons();
+        }
+
+        // ΣΥΝΑΡΤΗΣΗ ΓΙΑ ΧΡΩΜΑΤΑ ΚΑΙ BADGES ΔΙΑΘΕΣΙΜΟΤΗΤΑΣ (ΜΕ ΜΠΛΕ ΣΤΟ MADE_TO_ORDER)
+        function getAvailabilityBadgeData(product) {
+            const status = product.availabilityStatus || 'in_stock';
+            const t = i18n[currentLang];
+
+            if (status === 'out_of_stock' || (product.stock !== undefined && product.stock <= 0)) {
+                return {
+                    class: 'bg-rose-50 text-rose-700 border-rose-200',
+                    dotClass: 'bg-rose-500',
+                    icon: 'slash',
+                    label: t.outOfStock,
+                    isOutOfStock: true
+                };
+            } else if (status === 'made_to_order') {
+                // ΕΔΩ: Αλλαγή σε μπλε χρώμα (Sky/Blue)
+                return {
+                    class: 'bg-sky-50 text-sky-700 border-sky-200',
+                    dotClass: 'bg-sky-500',
+                    icon: 'clock',
+                    label: t.madeToOrder,
+                    isOutOfStock: false
+                };
+            } else {
+                const countText = currentLang === 'el' ? `(${product.stock || 1} τμχ)` : `(${product.stock || 1} pcs)`;
+                return {
+                    class: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                    dotClass: 'bg-emerald-500',
+                    icon: 'check-circle',
+                    label: `${t.inStock} ${countText}`,
+                    isOutOfStock: false
+                };
+            }
+        }
+
+        // ================= ΛΙΣΤΑ ΠΡΟΪΟΝΤΩΝ =================
+        const products = [
+            {
+                id: 1,
+                name: 'Πλεκτό Αρκουδάκι bubble Bee',
+                nameEn: 'Bubble Bee Crochet Bear',
+                mainCategory: 'knitted',
+                subCategory: 'bears',
+                size: 'small',
+                sizeLabel: 'Small (~12cm)',
+                price: 5.00,
+                stock: 4,
+                availabilityStatus: 'in_stock',
+                desc: 'Απαλό πλεκτό αρκουδάκι με νήμα chenille σε μέγεθος Small. Ιδανικό για διακόσμηση γραφείου ή για ένα γλυκό δωράκι.',
+                descEn: 'Soft handmade crochet teddy bear made with chenille yarn in Small size. Ideal for desk decor or a cute gift.',
+                image: 'https://i.postimg.cc/kGkNncy1/bubble-bee.jpg',
+                images: [
+                    'https://i.postimg.cc/kGkNncy1/bubble-bee.jpg',
+                    'https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=800&q=80'
+                ],
+                badge: 'Small'
+            },
+            {
+                id: 2,
+                name: 'Πλεκτό Αρκουδάκι Cozy Bear',
+                nameEn: 'Cozy Bear Crochet Bear',
+                mainCategory: 'knitted',
+                subCategory: 'bears',
+                size: 'medium',
+                sizeLabel: 'Medium (~20cm)',
+                price: 22.00,
+                stock: 10,
+                availabilityStatus: 'made_to_order',
+                desc: 'Απαλό πλεκτό αρκουδάκι με βελούδινο νήμα chenille σε μέγεθος Medium. Πολύ ζεστό στην αφή και εξαιρετικά αγκαλιάσιμο.',
+                descEn: 'Soft handmade teddy bear with velvet chenille yarn in Medium size. Warm and cuddly.',
+                image: 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=800&q=80',
+                images: [
+                    'https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=800&q=80'
+                ],
+                badge: 'Medium'
+            },
+            {
+                id: 3,
+                name: 'Πλεκτό Αρκουδάκι Cozy Bear',
+                nameEn: 'Cozy Bear Large',
+                mainCategory: 'knitted',
+                subCategory: 'bears',
+                size: 'large',
+                sizeLabel: 'Large (~30cm)',
+                price: 29.00,
+                stock: 0,
+                availabilityStatus: 'out_of_stock',
+                desc: 'Το μεγαλύτερο και πιο αγκαλιάσιμο πλεκτό αρκουδάκι σε μέγεθος Large.',
+                descEn: 'Our largest and most huggable handcrafted teddy bear in Large size.',
+                image: 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=800&q=80',
+                images: [
+                    'https://images.unsplash.com/photo-1559454403-b8fb88521f11?auto=format&fit=crop&w=800&q=80'
+                ],
+                badge: 'Large'
+            },
+            {
+                id: 4,
+                name: 'Μπρελόκ Αρκουδάκι Mochi Keychain',
+                nameEn: 'Mochi Bear Keychain',
+                mainCategory: 'knitted',
+                subCategory: 'keychains',
+                size: null,
+                price: 9.00,
+                stock: 5,
+                availabilityStatus: 'in_stock',
+                desc: 'Μίνι χειροποίητο πλεκτό αρκουδάκι με ανθεκτικό μεταλλικό κρίκο για κλειδιά ή τσάντα.',
+                descEn: 'Mini handcrafted crochet bear with durable metal keyring for keys or bag.',
+                image: 'https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=80',
+                images: [
+                    'https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=80'
+                ],
+                badge: 'Bestseller'
+            },
+            {
+                id: 5,
+                name: 'Μπρελόκ Πλεκτό Κρουασάν Pink',
+                nameEn: 'Pink Croissant Keychain',
+                mainCategory: 'knitted',
+                subCategory: 'keychains',
+                size: null,
+                price: 8.50,
+                stock: 3,
+                availabilityStatus: 'in_stock',
+                desc: 'Το signature χαμογελαστό ροζ κρουασανάκι σε πλεκτό μπρελόκ!',
+                descEn: 'Signature smiling pink croissant keychain in soft crochet yarn!',
+                image: 'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=800&q=80',
+                images: [
+                    'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=800&q=80'
+                ],
+                badge: 'Signature'
+            },
+            {
+                id: 6,
+                name: 'Χειροποίητη Ζωγραφιά Ακουαρέλα "Cozy Bear"',
+                nameEn: 'Watercolor Artwork "Cozy Bear"',
+                mainCategory: 'paintings',
+                subCategory: null,
+                size: null,
+                price: 14.00,
+                stock: 2,
+                availabilityStatus: 'in_stock',
+                desc: 'Πρωτότυπη ζωγραφιά ακουαρέλας σε ανάγλυφο βαμβακερό χαρτί 300gsm (A5).',
+                descEn: 'Original watercolor painting on 300gsm textured paper (A5 size).',
+                image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80',
+                images: [
+                    'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80'
+                ],
+                badge: 'Original'
+            },
+            {
+                id: 7,
+                name: 'Σετ 3 Κάρτες Ευχών Art Prints',
+                nameEn: 'Set of 3 Greeting Cards Art Prints',
+                mainCategory: 'paintings',
+                subCategory: null,
+                size: null,
+                price: 7.50,
+                stock: 8,
+                availabilityStatus: 'in_stock',
+                desc: 'Χαριτωμένες εικονογραφημένες κάρτες ευχών με φακέλους.',
+                descEn: 'Cute illustrated art greeting cards with matching kraft envelopes.',
+                image: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=800&q=80',
+                images: [
+                    'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=800&q=80'
+                ],
+                badge: 'Cute'
+            },
+            {
+                id: 8,
+                name: 'Sticker Pack "Pink Croissant & Friends"',
+                nameEn: 'Sticker Pack "Pink Croissant & Friends"',
+                mainCategory: 'extras',
+                subCategory: null,
+                size: null,
+                price: 4.50,
+                stock: 15,
+                availabilityStatus: 'in_stock',
+                desc: 'Σετ από 6 αδιάβροχα βινυλικά αυτοκόλλητα με το λογότυπο και cute σχέδια.',
+                descEn: 'Pack of 6 waterproof vinyl stickers with cute designs.',
+                image: 'https://images.unsplash.com/photo-1572375992501-4b0892d50c69?auto=format&fit=crop&w=800&q=80',
+                images: [
+                    'https://images.unsplash.com/photo-1572375992501-4b0892d50c69?auto=format&fit=crop&w=800&q=80'
+                ],
+                badge: 'Stickers'
+            },
+            {
+                id: 9,
+                name: 'Crochet Care & Gift Wrapping Box',
+                nameEn: 'Crochet Care & Gift Wrapping Box',
+                mainCategory: 'extras',
+                subCategory: null,
+                size: null,
+                price: 3.50,
+                stock: 10,
+                availabilityStatus: 'made_to_order',
+                desc: 'Παστέλ ροζ συσκευασία δώρου με κορδέλες και ευχαριστήρια κάρτα.',
+                descEn: 'Pastel pink gift packaging with ribbons and greeting card.',
+                image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=800&q=80',
+                images: [
+                    'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=800&q=80'
+                ],
+                badge: 'Gift'
+            }
+        ];
+
+        // Κατηγορίες
+        const mainCategories = [
+            { id: 'all', nameEl: 'Όλα', nameEn: 'All', icon: 'sparkles' },
+            { id: 'knitted', nameEl: 'Πλεκτές δημιουργίες', nameEn: 'Knitted Items', icon: 'heart' },
+            { id: 'paintings', nameEl: 'Ζωγραφιές', nameEn: 'Art & Prints', icon: 'palette' },
+            { id: 'extras', nameEl: 'Extras', nameEn: 'Extras', icon: 'gift' }
+        ];
+
+        const subCategories = [
+            { id: 'all', nameEl: 'Όλα τα πλεκτά', nameEn: 'All Knitted' },
+            { id: 'keychains', nameEl: 'Μπρελόκ', nameEn: 'Keychains' },
+            { id: 'bears', nameEl: 'Αρκουδάκια', nameEn: 'Teddy Bears' }
+        ];
+
+        const bearSizes = [
+            { id: 'all', nameEl: 'Όλα τα μεγέθη', nameEn: 'All Sizes' },
+            { id: 'small', nameEl: 'Small', nameEn: 'Small' },
+            { id: 'medium', nameEl: 'Medium', nameEn: 'Medium' },
+            { id: 'large', nameEl: 'Large', nameEn: 'Large' }
+        ];
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            updateIgHandleDisplays();
+            applyTranslations();
+            renderCategoryFilters();
+            renderProducts();
+            lucide.createIcons();
+        });
+
+        function updateIgHandleDisplays() {
+            document.getElementById('headerIgDisplay').innerText = '@' + instagramHandle;
+            document.getElementById('footerIgDisplay').innerText = '@' + instagramHandle;
+            document.getElementById('igHandleInput').value = instagramHandle;
+        }
+
+        function renderCategoryFilters() {
+            const t = i18n[currentLang];
+            const mainBar = document.getElementById('mainCategoriesBar');
+            mainBar.innerHTML = mainCategories.map(cat => {
+                const isActive = currentMainCategory === cat.id;
+                const activeClass = isActive 
+                    ? 'gradient-pink text-white shadow-md shadow-pink-200' 
+                    : 'bg-white text-slate-700 hover:bg-pink-50 border border-pink-200/80';
+                const name = currentLang === 'el' ? cat.nameEl : cat.nameEn;
+                return `
+                    <button onclick="setMainCategory('${cat.id}')" 
+                            class="px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold transition-all flex items-center gap-1.5 ${activeClass}">
+                        <i data-lucide="${cat.icon}" class="w-3.5 h-3.5"></i>
+                        <span>${name}</span>
+                    </button>
+                `;
+            }).join('');
+
+            const subBar = document.getElementById('subCategoriesBar');
+            if (currentMainCategory === 'knitted') {
+                subBar.classList.remove('hidden');
+                subBar.classList.add('flex');
+                subBar.innerHTML = `
+                    <span class="text-xs font-black text-pink-600 mr-1 flex items-center gap-1">
+                        <i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i> ${t.subCatLabel}
+                    </span>
+                    ${subCategories.map(sub => {
+                        const isActive = currentSubCategory === sub.id;
+                        const activeClass = isActive
+                            ? 'bg-pink-600 text-white shadow-xs'
+                            : 'bg-white/90 text-slate-600 hover:bg-pink-100/60 border border-pink-200';
+                        const name = currentLang === 'el' ? sub.nameEl : sub.nameEn;
+                        return `
+                            <button onclick="setSubCategory('${sub.id}')" 
+                                    class="px-3 py-1.5 rounded-full text-xs font-bold transition-all ${activeClass}">
+                                ${name}
+                            </button>
+                        `;
+                    }).join('')}
+                `;
+            } else {
+                subBar.classList.add('hidden');
+                subBar.classList.remove('flex');
+            }
+
+            const sizeBar = document.getElementById('sizeSubCategoriesBar');
+            if (currentMainCategory === 'knitted' && currentSubCategory === 'bears') {
+                sizeBar.classList.remove('hidden');
+                sizeBar.classList.add('flex');
+                sizeBar.innerHTML = `
+                    <span class="text-xs font-black text-pink-500 mr-1 flex items-center gap-1">
+                        <i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i> ${t.sizeLabel}
+                    </span>
+                    ${bearSizes.map(sz => {
+                        const isActive = currentBearSize === sz.id;
+                        const activeClass = isActive
+                            ? 'bg-rose-500 text-white shadow-xs'
+                            : 'bg-white text-slate-600 hover:bg-pink-50 border border-pink-200';
+                        const name = currentLang === 'el' ? sz.nameEl : sz.nameEn;
+                        return `
+                            <button onclick="setBearSize('${sz.id}')" 
+                                    class="px-3 py-1 rounded-full text-xs font-bold transition-all ${activeClass}">
+                                ${name}
+                            </button>
+                        `;
+                    }).join('')}
+                `;
+            } else {
+                sizeBar.classList.add('hidden');
+                sizeBar.classList.remove('flex');
+            }
+
+            lucide.createIcons();
+        }
+
+        function setMainCategory(catId) {
+            currentMainCategory = catId;
+            currentSubCategory = 'all';
+            currentBearSize = 'all';
+            renderCategoryFilters();
+            renderProducts();
+        }
+
+        function setSubCategory(subId) {
+            currentSubCategory = subId;
+            currentBearSize = 'all';
+            renderCategoryFilters();
+            renderProducts();
+        }
+
+        function setBearSize(sizeId) {
+            currentBearSize = sizeId;
+            renderCategoryFilters();
+            renderProducts();
+        }
+
+        function resetAllFilters() {
+            currentMainCategory = 'all';
+            currentSubCategory = 'all';
+            currentBearSize = 'all';
+            searchQuery = '';
+            document.getElementById('searchInputDesktop').value = '';
+            document.getElementById('searchInputMobile').value = '';
+            renderCategoryFilters();
+            renderProducts();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.trim().toLowerCase();
+            const dInput = document.getElementById('searchInputDesktop');
+            const mInput = document.getElementById('searchInputMobile');
+            if (dInput.value !== val) dInput.value = val;
+            if (mInput.value !== val) mInput.value = val;
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const noResults = document.getElementById('noResultsState');
+            const t = i18n[currentLang];
+
+            const filtered = products.filter(p => {
+                if (currentMainCategory !== 'all' && p.mainCategory !== currentMainCategory) return false;
+                if (currentMainCategory === 'knitted' && currentSubCategory !== 'all' && p.subCategory !== currentSubCategory) return false;
+                if (currentMainCategory === 'knitted' && currentSubCategory === 'bears' && currentBearSize !== 'all' && p.size !== currentBearSize) return false;
+
+                if (searchQuery) {
+                    const name = (currentLang === 'en' && p.nameEn) ? p.nameEn : p.name;
+                    const desc = (currentLang === 'en' && p.descEn) ? p.descEn : p.desc;
+                    const matchName = name.toLowerCase().includes(searchQuery);
+                    const matchDesc = desc.toLowerCase().includes(searchQuery);
+                    if (!matchName && !matchDesc) return false;
+                }
+
+                return true;
+            });
+
+            document.getElementById('productsCount').innerText = filtered.length;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            noResults.classList.add('hidden');
+            grid.innerHTML = filtered.map(prod => {
+                const avail = getAvailabilityBadgeData(prod);
+                const prodName = (currentLang === 'en' && prod.nameEn) ? prod.nameEn : prod.name;
+                const prodDesc = (currentLang === 'en' && prod.descEn) ? prod.descEn : prod.desc;
+
+                return `
+                <div class="group bg-white rounded-3xl border border-pink-100 overflow-hidden shadow-xs hover:shadow-xl hover:border-pink-300 transition-all duration-300 flex flex-col justify-between cursor-pointer" onclick="openProductModal(${prod.id})">
+                    <div>
+                        <div class="relative w-full h-56 bg-pink-50/50 overflow-hidden">
+                            <img src="${prod.image}" alt="${prodName}" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                 loading="lazy"
+                                 onerror="this.src='https://placehold.co/600x400/feeef4/e84880?text=Pink+Croissant'">
+                            
+                            ${prod.badge ? `
+                                <span class="absolute top-3 left-3 bg-white/95 backdrop-blur-md text-pink-600 text-xs font-black px-3 py-1 rounded-full shadow-xs border border-pink-100">
+                                    ${prod.badge}
+                                </span>
+                            ` : ''}
+
+                            ${prod.sizeLabel ? `
+                                <div class="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-xs text-white text-[11px] font-extrabold px-2.5 py-1 rounded-xl">
+                                    ${prod.sizeLabel}
+                                </div>
+                            ` : ''}
+
+                            <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-md text-[10px] font-black px-2.5 py-1 rounded-full shadow-xs border flex items-center gap-1.5 ${avail.class}">
+                                <span class="w-1.5 h-1.5 rounded-full ${avail.dotClass}"></span>
+                                <span>${avail.label}</span>
+                            </div>
+
+                            <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <span class="bg-white/90 text-slate-800 text-xs font-extrabold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5 backdrop-blur-xs">
+                                    <i data-lucide="eye" class="w-3.5 h-3.5 text-pink-500"></i> ${t.details}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="p-5">
+                            <h3 class="font-black text-slate-900 text-base leading-snug group-hover:text-pink-600 transition-colors mb-1.5">
+                                ${prodName}
+                            </h3>
+                            <p class="text-xs text-slate-500 font-medium leading-relaxed mb-4 line-clamp-2">
+                                ${prodDesc}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-5 pt-0" onclick="event.stopPropagation()">
+                        <div class="flex items-center justify-between pt-3 border-t border-pink-100">
+                            <div>
+                                <span class="text-[10px] text-pink-400 font-bold uppercase block tracking-wider">${t.price}</span>
+                                <span class="text-lg font-black text-slate-900">€${prod.price.toFixed(2)}</span>
+                            </div>
+                            
+                            ${avail.isOutOfStock ? `
+                                <span class="bg-slate-100 text-slate-400 text-xs font-black px-3.5 py-2 rounded-2xl cursor-not-allowed">
+                                    ${t.outOfStock}
+                                </span>
+                            ` : `
+                                <button onclick="addToCart(${prod.id}, 1)" 
+                                        class="gradient-pink hover:brightness-105 text-white text-xs font-black px-4 py-2.5 rounded-2xl flex items-center gap-1.5 shadow-md shadow-pink-200 active:scale-95 transition-all">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                    <span>${t.add}</span>
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function openProductModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            activeProduct = product;
+            activeProductQty = 1;
+            const t = i18n[currentLang];
+
+            const modal = document.getElementById('productModal');
+            const card = document.getElementById('productModalCard');
+            const mainImg = document.getElementById('modalMainImage');
+            const badge = document.getElementById('modalBadge');
+            const title = document.getElementById('modalTitle');
+            const price = document.getElementById('modalPrice');
+            const desc = document.getElementById('modalDesc');
+            const catBadge = document.getElementById('modalCategoryBadge');
+            const sizeBadge = document.getElementById('modalSizeBadge');
+            const availBadge = document.getElementById('modalAvailabilityBadge');
+            const thumbsContainer = document.getElementById('modalThumbnails');
+            const addBtn = document.getElementById('modalAddToCartBtn');
+            const addBtnText = document.getElementById('modalAddToCartBtnText');
+            const qtyRow = document.getElementById('modalQuantityRow');
+            const totalRow = document.getElementById('modalTotalRow');
+
+            mainImg.src = product.image;
+            title.innerText = (currentLang === 'en' && product.nameEn) ? product.nameEn : product.name;
+            price.innerText = `€${product.price.toFixed(2)}`;
+            desc.innerText = (currentLang === 'en' && product.descEn) ? product.descEn : product.desc;
+
+            const catObj = mainCategories.find(c => c.id === product.mainCategory);
+            catBadge.innerText = catObj ? (currentLang === 'el' ? catObj.nameEl : catObj.nameEn) : 'Handmade';
+
+            if (product.sizeLabel) {
+                sizeBadge.innerText = product.sizeLabel;
+                sizeBadge.classList.remove('hidden');
+            } else {
+                sizeBadge.classList.add('hidden');
+            }
+
+            if (product.badge) {
+                badge.innerText = product.badge;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            const avail = getAvailabilityBadgeData(product);
+            availBadge.className = `text-[11px] font-extrabold px-2.5 py-0.5 rounded-md border flex items-center gap-1.5 ${avail.class}`;
+            availBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${avail.dotClass}"></span> <span>${avail.label}</span>`;
+
+            if (avail.isOutOfStock) {
+                qtyRow.classList.add('hidden');
+                totalRow.classList.add('hidden');
+                addBtn.disabled = true;
+                addBtn.className = "w-full bg-slate-100 text-slate-400 py-3 px-5 rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-not-allowed";
+                addBtnText.innerText = t.outOfStock;
+            } else {
+                qtyRow.classList.remove('hidden');
+                totalRow.classList.remove('hidden');
+                addBtn.disabled = false;
+                addBtn.className = "w-full gradient-pink hover:brightness-105 text-white py-3 px-5 rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-pink-200 active:scale-[0.98] transition-all cursor-pointer";
+                addBtnText.innerText = t.addToCart;
+            }
+
+            const imgList = (product.images && product.images.length > 0) ? product.images : [product.image];
+            thumbsContainer.innerHTML = imgList.map((imgUrl, idx) => `
+                <button onclick="setModalMainImage('${imgUrl}', this)" class="thumbnail-btn w-14 h-14 rounded-xl overflow-hidden border-2 transition-all ${idx === 0 ? 'border-pink-500 scale-95' : 'border-transparent opacity-70 hover:opacity-100'}">
+                    <img src="${imgUrl}" class="w-full h-full object-cover">
+                </button>
+            `).join('');
+
+            updateModalQtyDisplay();
+
+            addBtn.onclick = () => {
+                if (!avail.isOutOfStock) {
+                    addToCart(product.id, activeProductQty);
+                    closeProductModal();
+                }
+            };
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-100');
+            card.classList.remove('scale-95');
+            card.classList.add('scale-100');
+
+            lucide.createIcons();
+        }
+
+        function setModalMainImage(src, btn) {
+            document.getElementById('modalMainImage').src = src;
+            document.querySelectorAll('.thumbnail-btn').forEach(b => {
+                b.classList.remove('border-pink-500', 'scale-95');
+                b.classList.add('border-transparent', 'opacity-70');
+            });
+            if (btn) {
+                btn.classList.add('border-pink-500', 'scale-95');
+                btn.classList.remove('border-transparent', 'opacity-70');
+            }
+        }
+
+        function changeModalQuantity(delta) {
+            if (!activeProduct) return;
+            const maxStock = activeProduct.stock !== undefined ? activeProduct.stock : 99;
+            activeProductQty += delta;
+            if (activeProductQty < 1) activeProductQty = 1;
+            if (activeProduct.availabilityStatus === 'in_stock' && activeProductQty > maxStock) {
+                activeProductQty = maxStock;
+                showToast(currentLang === 'el' ? `Μέγιστο διαθέσιμο απόθεμα: ${maxStock} τεμάχια` : `Max available stock: ${maxStock} items`);
+            }
+            updateModalQtyDisplay();
+        }
+
+        function updateModalQtyDisplay() {
+            document.getElementById('modalQuantityDisplay').innerText = activeProductQty;
+            if (activeProduct) {
+                const total = (activeProduct.price * activeProductQty).toFixed(2);
+                document.getElementById('modalTotalPrice').innerText = `€${total}`;
+            }
+        }
+
+        function closeProductModal() {
+            const modal = document.getElementById('productModal');
+            const card = document.getElementById('productModalCard');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.classList.remove('opacity-100');
+            card.classList.add('scale-95');
+            card.classList.remove('scale-100');
+            activeProduct = null;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeProductModal();
+                toggleCartDrawer(false);
+                toggleSettingsModal(false);
+            }
+        });
+
+        // Cart Actions
+        function addToCart(productId, quantity = 1) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingIndex = cart.findIndex(item => item.id === productId);
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += quantity;
+            } else {
+                cart.push({
+                    id: product.id,
+                    price: product.price,
+                    image: product.image,
+                    quantity: quantity
+                });
+            }
+
+            renderCart();
+            const name = (currentLang === 'en' && product.nameEn) ? product.nameEn : product.name;
+            showToast(currentLang === 'el' ? `Προστέθηκε: ${quantity}x "${name}" 🌸` : `Added: ${quantity}x "${name}" 🌸`);
+        }
+
+        function updateQuantity(productId, delta) {
+            const index = cart.findIndex(item => item.id === productId);
+            if (index === -1) return;
+
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            renderCart();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            const badge = document.getElementById('cartCountBadge');
+            const summaryHeader = document.getElementById('cartSummaryHeader');
+            const subtotalElem = document.getElementById('subtotalPrice');
+            const totalElem = document.getElementById('totalPrice');
+            const t = i18n[currentLang];
+
+            const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            badge.innerText = totalItemsCount;
+            summaryHeader.innerText = `${totalItemsCount} ${totalItemsCount === 1 ? (currentLang === 'el' ? 'προϊόν' : 'item') : (currentLang === 'el' ? 'προϊόντα' : 'items')}`;
+
+            const totalPrice = cart.reduce((sum, item) => {
+                const prod = products.find(p => p.id === item.id);
+                return sum + ((prod ? prod.price : item.price) * item.quantity);
+            }, 0);
+
+            const formattedTotal = `€${totalPrice.toFixed(2)}`;
+            subtotalElem.innerText = formattedTotal;
+            totalElem.innerText = formattedTotal;
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-400">
+                        <div class="w-16 h-16 rounded-full bg-pink-50 flex items-center justify-center mb-3 text-pink-300">
+                            <i data-lucide="shopping-bag" class="w-8 h-8"></i>
+                        </div>
+                        <p class="font-extrabold text-slate-700 text-sm mb-1">${t.emptyCart}</p>
+                        <p class="text-xs text-slate-400 max-w-xs mb-4">${t.emptyCartSub}</p>
+                        <button onclick="toggleCartDrawer(false)" class="text-xs font-black text-pink-600 hover:text-pink-700 underline">
+                            ${t.backToProducts}
+                        </button>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = cart.map(item => {
+                const product = products.find(p => p.id === item.id);
+                const name = product ? ((currentLang === 'en' && product.nameEn) ? product.nameEn : product.name) : 'Item';
+                const sizeLabel = product && product.sizeLabel ? ` (${product.sizeLabel})` : '';
+
+                return `
+                <div class="flex items-center gap-3 bg-pink-50/50 p-3 rounded-2xl border border-pink-100">
+                    <img src="${item.image}" alt="${name}" 
+                         class="w-14 h-14 object-cover rounded-xl bg-white border border-pink-200"
+                         onerror="this.src='https://placehold.co/100x100/feeef4/e84880?text=PC'">
+                    
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-black text-slate-900 truncate mb-1" title="${name}">
+                            ${name}${sizeLabel}
+                        </h4>
+                        <div class="text-[11px] text-pink-600 font-bold mb-2">
+                            €${item.price.toFixed(2)} / ${currentLang === 'el' ? 'τμχ' : 'pc'}
+                        </div>
+                        
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center bg-white border border-pink-200 rounded-lg shadow-xs">
+                                <button onclick="updateQuantity(${item.id}, -1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
+                                    <i data-lucide="minus" class="w-3 h-3"></i>
+                                </button>
+                                <span class="text-xs font-black px-2 text-slate-800">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, 1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
+                                    <i data-lucide="plus" class="w-3 h-3"></i>
+                                </button>
+                            </div>
+                            <span class="text-xs font-black text-slate-900 ml-auto">
+                                €${(item.price * item.quantity).toFixed(2)}
+                            </span>
+                        </div>
+                    </div>
+
+                    <button onclick="removeFromCart(${item.id})" class="p-1.5 text-slate-400 hover:text-rose-500 transition-colors" title="Remove">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        // Toggle Drawers & Modals
+        function toggleCartDrawer(open) {
+            const drawer = document.getElementById('cartDrawer');
+            const backdrop = document.getElementById('cartDrawerBackdrop');
+            if (open) {
+                backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                backdrop.classList.add('opacity-100');
+                drawer.classList.remove('translate-x-full');
+            } else {
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+                backdrop.classList.remove('opacity-100');
+                drawer.classList.add('translate-x-full');
+            }
+        }
+
+        function toggleSettingsModal(open) {
+            const modal = document.getElementById('settingsModal');
+            const card = document.getElementById('settingsModalCard');
+            if (open) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modal.classList.add('opacity-100');
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            } else {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modal.classList.remove('opacity-100');
+                card.classList.add('scale-95');
+                card.classList.remove('scale-100');
+            }
+        }
+
+        function saveInstagramHandle() {
+            const input = document.getElementById('igHandleInput').value.trim().replace('@', '');
+            if (!input) {
+                showToast(currentLang === 'el' ? 'Παρακαλώ εισάγετε ένα έγκυρο username' : 'Please enter a valid username');
+                return;
+            }
+            instagramHandle = input;
+            updateIgHandleDisplays();
+            toggleSettingsModal(false);
+            showToast(`Instagram @${instagramHandle} ✨`);
+        }
+
+        // Generate Order Text
+        function generateOrderText() {
+            if (cart.length === 0) return null;
+
+            const name = document.getElementById('custName').value.trim() || '-';
+            const phone = document.getElementById('custPhone').value.trim() || '-';
+            const city = document.getElementById('custCity').value.trim() || '-';
+            const notes = document.getElementById('custNotes').value.trim() || '-';
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+
+            if (currentLang === 'en') {
+                let msg = `🥐 *NEW ORDER REQUEST | PINK CROISSANT*
+`;
+                msg += `------------------------------------
+`;
+                msg += `📋 *ITEMS:*
+`;
+                cart.forEach((item, index) => {
+                    const prod = products.find(p => p.id === item.id);
+                    const prodName = prod ? ((prod.nameEn) ? prod.nameEn : prod.name) : 'Item';
+                    const itemTotal = (item.price * item.quantity).toFixed(2);
+                    msg += `${index + 1}. ${prodName}
+   └ Qty: ${item.quantity} x €${item.price.toFixed(2)} = €${itemTotal}
+`;
+                });
+                msg += `------------------------------------
+`;
+                msg += `💰 *TOTAL:* €${totalPrice}
+
+`;
+                msg += `👤 *CUSTOMER INFO:*
+`;
+                msg += `• Name: ${name}
+`;
+                msg += `• Phone: ${phone}
+`;
+                msg += `• City: ${city}
+`;
+                if (notes !== '-') msg += `• Notes: ${notes}
+`;
+                msg += `
+Hello! I would love to order the items above. Please let me know regarding availability and payment methods. Thank you so much! 🌸✨`;
+                return msg;
+            } else {
+                let msg = `🥐 *ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ | PINK CROISSANT*
+`;
+                msg += `------------------------------------
+`;
+                msg += `📋 *ΠΡΟΪΟΝΤΑ:*
+`;
+                cart.forEach((item, index) => {
+                    const prod = products.find(p => p.id === item.id);
+                    const prodName = prod ? prod.name : 'Προϊόν';
+                    const itemTotal = (item.price * item.quantity).toFixed(2);
+                    msg += `${index + 1}. ${prodName}
+   └ Ποσότητα: ${item.quantity} x €${item.price.toFixed(2)} = €${itemTotal}
+`;
+                });
+                msg += `------------------------------------
+`;
+                msg += `💰 *ΣΥΝΟΛΟ:* €${totalPrice}
+
+`;
+                msg += `👤 *ΣΤΟΙΧΕΙΑ ΠΑΡΑΛΗΠΤΗ:*
+`;
+                msg += `• Όνομα: ${name}
+`;
+                msg += `• Τηλέφωνο: ${phone}
+`;
+                msg += `• Πόλη: ${city}
+`;
+                if (notes !== '-') msg += `• Σημειώσεις: ${notes}
+`;
+                msg += `
+Γεια σας! Θα ήθελα να παραγγείλω τα παραπάνω προϊόντα. Παρακαλώ ενημερώστε με για τη διαθεσιμότητα και τρόπο πληρωμής. Ευχαριστώ πολύ! 🌸✨`;
+                return msg;
+            }
+        }
+
+        function copyOrderMessage(quiet = false) {
+            const t = i18n[currentLang];
+            const text = generateOrderText();
+            if (!text) {
+                showToast(t.addMoreItems);
+                return false;
+            }
+
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            tempInput.style.position = 'fixed';
+            tempInput.style.left = '-9999px';
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            
+            let success = false;
+            try {
+                success = document.execCommand('copy');
+            } catch (err) {
+                console.error('Clipboard copy failed:', err);
+            }
+            document.body.removeChild(tempInput);
+
+            if (!quiet) {
+                showToast(success ? t.orderCopied : 'Failed to copy.');
+            }
+            return success;
+        }
+
+        function sendOrderViaInstagram() {
+            const t = i18n[currentLang];
+            if (cart.length === 0) {
+                showToast(t.addMoreItems);
+                return;
+            }
+
+            copyOrderMessage(true);
+
+            const igDirectUrl = `https://ig.me/m/${instagramHandle}`;
+            showToast(t.openingIg, 2500);
+
+            setTimeout(() => {
+                window.open(igDirectUrl, '_blank');
+            }, 500);
+        }
+
+        // Toast Helper
+        let toastTimeout;
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            const msgElem = document.getElementById('toastMessage');
+            
+            clearTimeout(toastTimeout);
+            msgElem.innerText = message;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, duration);
+        }
+    </script>
+</body>
+</html>
