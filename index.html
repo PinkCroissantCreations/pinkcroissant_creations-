@@ -6,7 +6,6 @@
     <title>Pink Croissant | Cute Handmade & Knitted Studio</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -89,12 +88,7 @@
 
             <!-- Actions: Settings & Cart -->
             <div class="flex items-center gap-2 sm:gap-2.5">
-                <button onclick="toggleSettingsModal(true)" 
-                        title="Instagram Settings" 
-                        class="p-2.5 text-slate-500 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-colors flex items-center gap-1.5 text-xs font-bold">
-                    <i data-lucide="settings" class="w-4 h-4 text-pink-400"></i>
-                    <span class="hidden sm:inline">IG Handle</span>
-                </button>
+    
 
                 <!-- Cart Button -->
                 <button onclick="toggleCartDrawer(true)" 
@@ -122,52 +116,18 @@
     <!-- Main Content -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
-        <!-- How To Order Banner (3 Steps) -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-100 via-[#feeef4] to-pink-50 border border-pink-200 p-6 sm:p-8 shadow-sm">
-            <div class="max-w-3xl mb-6">
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-pink-200 text-pink-600 text-xs font-extrabold mb-3">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-500"></i>
-                    <span id="bannerTag">Simple & Fast</span>
-                </div>
-                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-2" id="bannerHeading">
-                    How to order in <span class="text-pink-600">3 simple steps</span> 🌸
-                </h2>
-                <p class="text-sm text-slate-600 font-medium leading-relaxed" id="bannerSubheading">
-                    Choose what you love, see the cart total, and send us a direct message on Instagram in 1 click!
-                </p>
+        <!-- Hero Banner: Find your own taste -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-100 via-[#feeef4] to-pink-50 border border-pink-200 p-8 sm:p-10 shadow-sm text-center flex flex-col items-center justify-center">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-pink-200 text-pink-600 text-xs font-extrabold mb-3">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-500"></i>
+                <span>Handmade with Love</span>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-pink-200/70 shadow-xs flex items-start gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center font-black text-base shrink-0">
-                        1
-                    </div>
-                    <div>
-                        <h3 class="font-extrabold text-sm text-slate-900 mb-1" id="step1Title">Choose Your Items</h3>
-                        <p class="text-xs text-slate-500 leading-snug" id="step1Desc">Click on the item to see more details, select quantity, and add it to your cart.</p>
-                    </div>
-                </div>
-
-                <div class="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-pink-200/70 shadow-xs flex items-start gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center font-black text-base shrink-0">
-                        2
-                    </div>
-                    <div>
-                        <h3 class="font-extrabold text-sm text-slate-900 mb-1" id="step2Title">Order Ready</h3>
-                        <p class="text-xs text-slate-500 leading-snug" id="step2Desc">The summary of the products you want is automatically created with full pricing. Tap the 'Cart' button to see it!</p>
-                    </div>
-                </div>
-
-                <div class="bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-pink-200/70 shadow-xs flex items-start gap-3.5">
-                    <div class="w-10 h-10 rounded-xl gradient-pink text-white flex items-center justify-center font-black text-base shrink-0 shadow-sm shadow-pink-300">
-                        3
-                    </div>
-                    <div>
-                        <h3 class="font-extrabold text-sm text-slate-900 mb-1" id="step3Title">Send Order Request via Instagram DM</h3>
-                        <p class="text-xs text-slate-500 leading-snug" id="step3Desc">Clicking the button copies your auto-generated order message to your clipboard while opening Instagram DM for instant pasting!</p>
-                    </div>
-                </div>
-            </div>
+            <h2 class="text-3xl sm:text-4xl font-black text-pink-600 tracking-tight mb-2">
+                Find your own taste ✨
+            </h2>
+            <p class="text-xs sm:text-sm text-pink-400 font-bold leading-relaxed max-w-xl">
+                Browse my creations below. Click any item to view details, add to cart and send your order request via Instagram DMs !
+            </p>
         </div>
 
         <!-- Filter & Categories Area -->
@@ -390,16 +350,6 @@
                     <input type="text" id="igHandleInput" class="w-full bg-pink-50/50 border border-pink-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-pink-300 focus:outline-none" placeholder="thepinkcroissant_creations">
                 </div>
             </div>
-
-            <div class="flex gap-2">
-                <button onclick="toggleSettingsModal(false)" class="flex-1 py-2.5 rounded-xl border border-pink-200 text-xs font-bold text-slate-600 hover:bg-pink-50">
-                    Cancel
-                </button>
-                <button onclick="saveInstagramHandle()" class="flex-1 gradient-pink text-white py-2.5 rounded-xl text-xs font-bold shadow-md shadow-pink-200 hover:brightness-105">
-                    Save
-                </button>
-            </div>
-        </div>
     </div>
 
     <!-- TOAST NOTIFICATION -->
@@ -640,15 +590,6 @@
             document.addEventListener('DOMContentLoaded', initApp);
         } else {
             initApp();
-        }
-
-        function updateIgHandleDisplays() {
-            const hIg = document.getElementById('headerIgDisplay');
-            const fIg = document.getElementById('footerIgDisplay');
-            const inputIg = document.getElementById('igHandleInput');
-            if (hIg) hIg.innerText = '@' + instagramHandle;
-            if (fIg) fIg.innerText = '@' + instagramHandle;
-            if (inputIg) inputIg.value = instagramHandle;
         }
 
         function renderCategoryFilters() {
@@ -1183,20 +1124,6 @@
                 card.classList.add('scale-95');
                 card.classList.remove('scale-100');
             }
-        }
-
-        function saveInstagramHandle() {
-            const input = document.getElementById('igHandleInput');
-            if (!input) return;
-            const val = input.value.trim().replace('@', '');
-            if (!val) {
-                showToast('Please enter a valid username');
-                return;
-            }
-            instagramHandle = val;
-            updateIgHandleDisplays();
-            toggleSettingsModal(false);
-            showToast('Instagram @' + instagramHandle + ' ✨');
         }
 
         // Generate Order Text (Clean safe strings)
