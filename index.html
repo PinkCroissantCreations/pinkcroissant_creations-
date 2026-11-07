@@ -33,11 +33,10 @@
             }
         }
     </script>
-    <!-- Google Fonts & Lucide Icons & FontAwesome -->
+    <!-- Google Fonts & Lucide Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { font-family: 'Nunito', sans-serif; }
@@ -89,13 +88,13 @@
                     <i data-lucide="search" class="w-4 h-4 text-pink-300 absolute left-4 top-1/2 -translate-y-1/2"></i>
                     <input type="text" id="searchInputDesktop" placeholder="Search..." 
                            class="w-full bg-pink-50/60 border border-pink-200 text-sm rounded-full pl-11 pr-4 py-2.5 text-slate-700 placeholder-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 transition-all"
-                           oninput="handleSearch(this.value)">
+                           oninput="window.handleSearch(this.value)">
                 </div>
             </div>
 
             <!-- Actions: Cart Button -->
             <div class="flex items-center gap-2 sm:gap-2.5">
-                <button onclick="toggleCartDrawer(true)" 
+                <button onclick="window.toggleCartDrawer(true)" 
                         class="relative flex items-center gap-2 gradient-pink hover:brightness-105 text-white px-4 sm:px-5 py-2.5 rounded-full font-bold shadow-md shadow-pink-300/40 transition-transform active:scale-95">
                     <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                     <span class="hidden sm:inline text-sm" id="navCartLabel">Cart</span>
@@ -112,7 +111,7 @@
                 <i data-lucide="search" class="w-4 h-4 text-pink-300 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
                 <input type="text" id="searchInputMobile" placeholder="Search..." 
                        class="w-full bg-pink-50/50 border border-pink-200 text-sm rounded-full pl-10 pr-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-pink-300"
-                       oninput="handleSearch(this.value)">
+                       oninput="window.handleSearch(this.value)">
             </div>
         </div>
     </header>
@@ -133,18 +132,28 @@
             </p>
         </div>
 
-        <!-- OWNER MODE NOTICE (Hidden by default) -->
-        <div id="adminTopPanel" class="hidden mb-6 bg-yellow-200 border-2 border-slate-900 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 odd-shadow-sm">
-            <div class="flex items-center gap-2">
-                <span class="text-xl">🛠️</span>
+        <!-- OWNER MODE PANEL (Visible only when Owner Mode is Active) -->
+        <div id="adminTopPanel" class="hidden bg-amber-50 border-2 border-amber-300 rounded-3xl p-5 flex flex-wrap items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-amber-200 text-amber-800 flex items-center justify-center text-xl shrink-0">
+                    🛠️
+                </div>
                 <div>
-                    <h2 class="font-bold text-slate-900 font-brand">Owner Mode Active</h2>
-                    <p class="text-xs text-slate-700">You are logged in as the owner. Changes sync automatically!</p>
+                    <h3 class="font-black text-slate-900 text-base">Owner Mode Active</h3>
+                    <p class="text-xs text-slate-600 font-medium">You can add new products or edit/delete any existing item directly on the page.</p>
                 </div>
             </div>
-            <button onclick="window.openPasswordModal()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl transition">
-                Exit Owner Mode
-            </button>
+            <div class="flex items-center gap-2.5">
+                <button onclick="window.openProductAdminModal()" 
+                        class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs rounded-2xl shadow-sm flex items-center gap-1.5 transition active:scale-95">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Add New Product</span>
+                </button>
+                <button onclick="window.openPasswordModal()" 
+                        class="px-4 py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-xs rounded-2xl shadow-sm transition active:scale-95">
+                    Exit Owner Mode
+                </button>
+            </div>
         </div>
         
         <!-- Filter & Categories Area -->
@@ -155,7 +164,7 @@
 
             <div class="flex items-center justify-between text-xs font-bold text-slate-500 pt-2 px-1">
                 <span><span id="foundLabel">Found:</span> <strong id="productsCount" class="text-pink-600">0</strong> <span id="prodCountLabel">products</span></span>
-                <button onclick="resetAllFilters()" id="resetFiltersBtn" class="text-pink-500 hover:text-pink-700 underline cursor-pointer">
+                <button onclick="window.resetAllFilters()" id="resetFiltersBtn" class="text-pink-500 hover:text-pink-700 underline cursor-pointer">
                     Clear filters
                 </button>
             </div>
@@ -171,16 +180,16 @@
             </div>
             <h3 class="text-base font-extrabold text-slate-800 mb-1" id="noResultsTitle">No products found in this category</h3>
             <p class="text-xs text-slate-500 mb-4 font-medium" id="noResultsSub">Try a different filter or clear your search query.</p>
-            <button onclick="resetAllFilters()" id="noResultsBtn" class="text-xs font-extrabold text-white gradient-pink px-4 py-2 rounded-full shadow-md shadow-pink-200">
+            <button onclick="window.resetAllFilters()" id="noResultsBtn" class="text-xs font-extrabold text-white gradient-pink px-4 py-2 rounded-full shadow-md shadow-pink-200">
                 View All
             </button>
         </div>
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-rose-100 border-t-2 border-slate-900 mt-auto py-10">
+    <footer class="bg-rose-100 border-t border-pink-200 mt-auto py-10">
         <div class="max-w-7xl mx-auto px-4 text-center space-y-4">
-            <div class="flex justify-center items-center gap-2 text-slate-900 font-brand font-bold text-xl">
+            <div class="flex justify-center items-center gap-2 text-slate-900 font-bold text-xl">
                 <i data-lucide="instagram" class="w-5 h-5 text-pink-600"></i>
                 <span id="footerBrandName">Pink Croissant</span>
             </div>
@@ -206,7 +215,7 @@
                 <div class="w-12 h-12 bg-pink-100 border-2 border-slate-900 rounded-2xl flex items-center justify-center mx-auto text-slate-900 text-xl">
                     <i data-lucide="key-round" class="w-6 h-6 text-pink-600"></i>
                 </div>
-                <h3 class="text-2xl font-brand font-bold text-slate-900">Password Required</h3>
+                <h3 class="text-2xl font-bold text-slate-900">Password Required</h3>
                 <p class="text-xs text-slate-500 font-medium">Please enter the owner authorization key to access administrative features.</p>
                 
                 <form onsubmit="window.submitPasswordForm(event)" class="space-y-4 pt-2">
@@ -225,7 +234,124 @@
         </div>
     </div>
 
-    <!-- PRODUCT DETAILS MODAL -->
+    <!-- OWNER: ADD / EDIT PRODUCT MODAL -->
+    <div id="productAdminModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] overflow-y-auto p-6 sm:p-7 shadow-2xl border border-pink-200 relative">
+            <button onclick="window.closeProductAdminModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-pink-50 rounded-full transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-2.5 mb-5 pb-3 border-b border-pink-100">
+                <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-black">
+                    <i data-lucide="package-plus" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 id="adminModalHeading" class="text-lg font-black text-slate-900">Add New Product</h3>
+                    <p class="text-xs text-slate-500 font-medium">Fill in the product details below.</p>
+                </div>
+            </div>
+
+            <form id="adminProductForm" onsubmit="window.saveProductAdmin(event)" class="space-y-3.5 text-xs">
+                <input type="hidden" id="adminProdId" value="">
+
+                <div>
+                    <label class="block font-black text-slate-700 mb-1">Product Name *</label>
+                    <input type="text" id="adminProdName" required placeholder="e.g. Cozy Bear Crochet"
+                           class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-black text-slate-700 mb-1">Price (€) *</label>
+                        <input type="number" step="0.50" id="adminProdPrice" required placeholder="15.00"
+                               class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    </div>
+                    <div>
+                        <label class="block font-black text-slate-700 mb-1">Stock Quantity</label>
+                        <input type="number" id="adminProdStock" value="5" min="0"
+                               class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-black text-slate-700 mb-1">Main Category *</label>
+                        <select id="adminProdMainCat" required class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                            <option value="knitted">Knitted Items</option>
+                            <option value="paintings">Art & Prints</option>
+                            <option value="extras">Extras</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-black text-slate-700 mb-1">Subcategory</label>
+                        <select id="adminProdSubCat" class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                            <option value="">None</option>
+                            <option value="bears">Teddy Bears</option>
+                            <option value="keychains">Keychains</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-black text-slate-700 mb-1">Size (Bears)</label>
+                        <select id="adminProdSize" class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                            <option value="">None</option>
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-black text-slate-700 mb-1">Size Label</label>
+                        <input type="text" id="adminProdSizeLabel" placeholder="e.g. Small (~12cm)"
+                               class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-black text-slate-700 mb-1">Status</label>
+                        <select id="adminProdStatus" class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                            <option value="in_stock">In Stock</option>
+                            <option value="made_to_order">Made to Order</option>
+                            <option value="out_of_stock">Sold Out</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-black text-slate-700 mb-1">Badge (Optional)</label>
+                        <input type="text" id="adminProdBadge" placeholder="e.g. Bestseller, New"
+                               class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-black text-slate-700 mb-1">Image URL *</label>
+                    <input type="url" id="adminProdImage" required placeholder="https://..."
+                           class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                </div>
+
+                <div>
+                    <label class="block font-black text-slate-700 mb-1">Description *</label>
+                    <textarea id="adminProdDesc" rows="3" required placeholder="Product description..."
+                              class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300"></textarea>
+                </div>
+
+                <div class="flex gap-2.5 pt-2">
+                    <button type="button" onclick="window.closeProductAdminModal()" 
+                            class="flex-1 py-3 rounded-xl border border-pink-200 text-xs font-bold text-slate-600 hover:bg-pink-50 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 gradient-pink hover:brightness-105 text-white py-3 rounded-xl text-xs font-black shadow-md shadow-pink-200 transition">
+                        Save Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAILS MODAL (Customer View) -->
     <div id="productModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300">
         <div id="productModalCard" class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-pink-100 transform scale-95 transition-all duration-300 relative">
             
@@ -444,7 +570,7 @@
         }
 
         // ================= PRODUCT LIST =================
-        const products = [
+        let products = [
             {
                 id: 1,
                 name: 'Bubble Bee Crochet Bear',
@@ -689,7 +815,7 @@
                 const activeClass = isActive 
                     ? 'gradient-pink text-white shadow-md shadow-pink-200' 
                     : 'bg-white text-slate-700 hover:bg-pink-50 border border-pink-200/80';
-                return `<button onclick="setMainCategory('${cat.id}')" class="px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold transition-all ${activeClass}"><span>${cat.name}</span></button>`;
+                return `<button onclick="window.setMainCategory('${cat.id}')" class="px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold transition-all ${activeClass}"><span>${cat.name}</span></button>`;
             }).join('');
 
             const subBar = document.getElementById('subCategoriesBar');
@@ -707,7 +833,7 @@
                                 ? 'bg-pink-600 text-white shadow-xs'
                                 : 'bg-white/90 text-slate-600 hover:bg-pink-100/60 border border-pink-200';
                             return `
-                                <button onclick="setSubCategory('${sub.id}')" 
+                                <button onclick="window.setSubCategory('${sub.id}')" 
                                         class="px-3 py-1.5 rounded-full text-xs font-bold transition-all ${activeClass}">
                                     ${sub.name}
                                 </button>
@@ -735,7 +861,7 @@
                                 ? 'bg-rose-500 text-white shadow-xs'
                                 : 'bg-white text-slate-600 hover:bg-pink-50 border border-pink-200';
                             return `
-                                <button onclick="setBearSize('${sz.id}')" 
+                                <button onclick="window.setBearSize('${sz.id}')" 
                                         class="px-3 py-1 rounded-full text-xs font-bold transition-all ${activeClass}">
                                     ${sz.name}
                                 </button>
@@ -784,7 +910,20 @@
                 const avail = getAvailabilityBadgeData(prod);
 
                 return `
-                <div class="group bg-white rounded-3xl border border-pink-100 overflow-hidden shadow-xs hover:shadow-xl hover:border-pink-300 transition-all duration-300 flex flex-col justify-between cursor-pointer" onclick="openProductModal(${prod.id})">
+                <div class="group bg-white rounded-3xl border border-pink-100 overflow-hidden shadow-xs hover:shadow-xl hover:border-pink-300 transition-all duration-300 flex flex-col justify-between cursor-pointer relative" onclick="window.openProductModal(${prod.id})">
+                    
+                    ${isAdminLoggedIn ? `
+                        <!-- OWNER ACTIONS (Edit / Delete) -->
+                        <div class="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-2xl shadow-md" onclick="event.stopPropagation()">
+                            <button onclick="window.openProductAdminModal(${prod.id})" title="Edit Product" class="w-7 h-7 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-900 flex items-center justify-center transition active:scale-95">
+                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <button onclick="window.deleteProductAdmin(${prod.id})" title="Delete Product" class="w-7 h-7 rounded-xl bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center transition active:scale-95">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    ` : ''}
+
                     <div>
                         <div class="relative w-full h-56 bg-pink-50/50 overflow-hidden">
                             <img src="${prod.image}" alt="${prod.name}" 
@@ -793,7 +932,7 @@
                                  onerror="this.src='https://placehold.co/600x400/feeef4/e84880?text=Pink+Croissant'">
                             
                             ${prod.badge ? `
-                                <span class="absolute top-3 left-3 bg-white/95 backdrop-blur-md text-pink-600 text-xs font-black px-3 py-1 rounded-full shadow-xs border border-pink-100">
+                                <span class="absolute top-3 ${isAdminLoggedIn ? 'left-24' : 'left-3'} bg-white/95 backdrop-blur-md text-pink-600 text-xs font-black px-3 py-1 rounded-full shadow-xs border border-pink-100">
                                     ${prod.badge}
                                 </span>
                             ` : ''}
@@ -830,7 +969,7 @@
                         <div class="flex items-center justify-between pt-3 border-t border-pink-100">
                             <div>
                                 <span class="text-[10px] text-pink-400 font-bold uppercase block tracking-wider">Price</span>
-                                <span class="text-lg font-black text-slate-900">€${prod.price.toFixed(2)}</span>
+                                <span class="text-lg font-black text-slate-900">€${Number(prod.price).toFixed(2)}</span>
                             </div>
                             
                             ${avail.isOutOfStock ? `
@@ -838,7 +977,7 @@
                                     Sold Out
                                 </span>
                             ` : `
-                                <button onclick="addToCart(${prod.id}, 1)" 
+                                <button onclick="window.addToCart(${prod.id}, 1)" 
                                         class="gradient-pink hover:brightness-105 text-white text-xs font-black px-4 py-2.5 rounded-2xl flex items-center gap-1.5 shadow-md shadow-pink-200 active:scale-95 transition-all">
                                     <i data-lucide="plus" class="w-4 h-4"></i>
                                     <span>Add</span>
@@ -878,7 +1017,7 @@
 
             if (mainImg) mainImg.src = product.image;
             if (title) title.innerText = product.name;
-            if (price) price.innerText = '€' + product.price.toFixed(2);
+            if (price) price.innerText = '€' + Number(product.price).toFixed(2);
             if (desc) desc.innerText = product.desc;
 
             const catObj = mainCategories.find(c => c.id === product.mainCategory);
@@ -986,7 +1125,7 @@
             const totalDisp = document.getElementById('modalTotalPrice');
             if (disp) disp.innerText = activeProductQty;
             if (activeProduct && totalDisp) {
-                const total = (activeProduct.price * activeProductQty).toFixed(2);
+                const total = (Number(activeProduct.price) * activeProductQty).toFixed(2);
                 totalDisp.innerText = '€' + total;
             }
         }
@@ -1006,9 +1145,129 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeProductModal();
+                window.closeProductAdminModal();
                 toggleCartDrawer(false);
             }
         });
+
+        // ================= OWNER CRUD FUNCTIONS =================
+        window.openProductAdminModal = function(prodId = null) {
+            const modal = document.getElementById('productAdminModal');
+            const form = document.getElementById('adminProductForm');
+            const heading = document.getElementById('adminModalHeading');
+            if (!modal || !form) return;
+
+            form.reset();
+
+            if (prodId) {
+                const prod = products.find(p => p.id === Number(prodId));
+                if (prod) {
+                    heading.innerText = 'Edit Product';
+                    document.getElementById('adminProdId').value = prod.id;
+                    document.getElementById('adminProdName').value = prod.name;
+                    document.getElementById('adminProdPrice').value = prod.price;
+                    document.getElementById('adminProdStock').value = prod.stock !== undefined ? prod.stock : 5;
+                    document.getElementById('adminProdMainCat').value = prod.mainCategory || 'knitted';
+                    document.getElementById('adminProdSubCat').value = prod.subCategory || '';
+                    document.getElementById('adminProdSize').value = prod.size || '';
+                    document.getElementById('adminProdSizeLabel').value = prod.sizeLabel || '';
+                    document.getElementById('adminProdStatus').value = prod.availabilityStatus || 'in_stock';
+                    document.getElementById('adminProdBadge').value = prod.badge || '';
+                    document.getElementById('adminProdImage').value = prod.image || '';
+                    document.getElementById('adminProdDesc').value = prod.desc || '';
+                }
+            } else {
+                heading.innerText = 'Add New Product';
+                document.getElementById('adminProdId').value = '';
+                document.getElementById('adminProdStock').value = 5;
+                document.getElementById('adminProdStatus').value = 'in_stock';
+            }
+
+            modal.classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        };
+
+        window.closeProductAdminModal = function() {
+            const modal = document.getElementById('productAdminModal');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.saveProductAdmin = function(event) {
+            event.preventDefault();
+
+            const prodId = document.getElementById('adminProdId').value;
+            const name = document.getElementById('adminProdName').value.trim();
+            const price = parseFloat(document.getElementById('adminProdPrice').value) || 0;
+            const stock = parseInt(document.getElementById('adminProdStock').value) || 0;
+            const mainCategory = document.getElementById('adminProdMainCat').value;
+            const subCategory = document.getElementById('adminProdSubCat').value || null;
+            const size = document.getElementById('adminProdSize').value || null;
+            const sizeLabel = document.getElementById('adminProdSizeLabel').value.trim() || null;
+            const availabilityStatus = document.getElementById('adminProdStatus').value;
+            const badge = document.getElementById('adminProdBadge').value.trim() || null;
+            const image = document.getElementById('adminProdImage').value.trim();
+            const desc = document.getElementById('adminProdDesc').value.trim();
+
+            if (prodId) {
+                // Edit existing product
+                const index = products.findIndex(p => p.id === Number(prodId));
+                if (index !== -1) {
+                    products[index] = {
+                        ...products[index],
+                        name,
+                        price,
+                        stock,
+                        mainCategory,
+                        subCategory,
+                        size,
+                        sizeLabel,
+                        availabilityStatus,
+                        badge,
+                        image,
+                        desc,
+                        images: [image]
+                    };
+                    showToast('Product updated successfully! ✨');
+                }
+            } else {
+                // Add new product
+                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                const newProduct = {
+                    id: newId,
+                    name,
+                    price,
+                    stock,
+                    mainCategory,
+                    subCategory,
+                    size,
+                    sizeLabel,
+                    availabilityStatus,
+                    badge,
+                    image,
+                    images: [image],
+                    desc
+                };
+                products.unshift(newProduct);
+                showToast('New product added successfully! 🎉');
+            }
+
+            window.closeProductAdminModal();
+            renderProducts();
+        };
+
+        window.deleteProductAdmin = function(prodId) {
+            const prod = products.find(p => p.id === Number(prodId));
+            if (!prod) return;
+
+            const confirmed = window.confirm(`Are you sure you want to delete "${prod.name}"?`);
+            if (confirmed) {
+                products = products.filter(p => p.id !== Number(prodId));
+                cart = cart.filter(item => item.id !== Number(prodId));
+                renderProducts();
+                renderCart();
+                showToast('Product deleted.');
+            }
+        };
 
         // Cart Actions
         window.addToCart = function(productId, quantity = 1) {
@@ -1060,7 +1319,7 @@
 
             const totalPrice = cart.reduce((sum, item) => {
                 const prod = products.find(p => p.id === item.id);
-                return sum + ((prod ? prod.price : item.price) * item.quantity);
+                return sum + ((prod ? Number(prod.price) : Number(item.price)) * item.quantity);
             }, 0);
 
             const formattedTotal = '€' + totalPrice.toFixed(2);
@@ -1102,7 +1361,7 @@
                             ${name}${sizeLabel}
                         </h4>
                         <div class="text-[11px] text-pink-600 font-bold mb-2">
-                            €${item.price.toFixed(2)} / pc
+                            €${Number(item.price).toFixed(2)} / pc
                         </div>
                         
                         <div class="flex items-center gap-2">
@@ -1116,7 +1375,7 @@
                                 </button>
                             </div>
                             <span class="text-xs font-black text-slate-900 ml-auto">
-                                €${(item.price * item.quantity).toFixed(2)}
+                                €${(Number(item.price) * item.quantity).toFixed(2)}
                             </span>
                         </div>
                     </div>
@@ -1160,7 +1419,7 @@
             const phone = (phoneInput && phoneInput.value.trim()) ? phoneInput.value.trim() : '-';
             const city = (cityInput && cityInput.value.trim()) ? cityInput.value.trim() : '-';
             const notes = (notesInput && notesInput.value.trim()) ? notesInput.value.trim() : '-';
-            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+            const totalPrice = cart.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0).toFixed(2);
 
             let lines = [
                 '🥐 *NEW ORDER REQUEST | PINK CROISSANT*',
@@ -1171,8 +1430,8 @@
             cart.forEach((item, index) => {
                 const prod = products.find(p => p.id === item.id);
                 const prodName = prod ? prod.name : 'Item';
-                const itemTotal = (item.price * item.quantity).toFixed(2);
-                lines.push((index + 1) + '. ' + prodName + '\\n   └ Qty: ' + item.quantity + ' x €' + item.price.toFixed(2) + ' = €' + itemTotal);
+                const itemTotal = (Number(item.price) * item.quantity).toFixed(2);
+                lines.push((index + 1) + '. ' + prodName + '\\n   └ Qty: ' + item.quantity + ' x €' + Number(item.price).toFixed(2) + ' = €' + itemTotal);
             });
 
             lines.push('------------------------------------');
