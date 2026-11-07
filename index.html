@@ -326,9 +326,10 @@
                 </div>
 
                 <div>
-                    <label class="block font-black text-slate-700 mb-1">Image URL *</label>
-                    <input type="url" id="adminProdImage" required placeholder="https://..."
-                           class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    <label class="block font-black text-slate-700 mb-1">Image URLs (one per line) *</label>
+                    <textarea id="adminProdImages" rows="3" required placeholder="https://image1.jpg&#10;https://image2.jpg"
+                              class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300"></textarea>
+                    <p class="text-[10px] text-slate-400 mt-0.5">The first image will be the cover photo. Visitors can browse all photos inside the item details modal.</p>
                 </div>
 
                 <div>
@@ -1173,7 +1174,10 @@
                     document.getElementById('adminProdSizeLabel').value = prod.sizeLabel || '';
                     document.getElementById('adminProdStatus').value = prod.availabilityStatus || 'in_stock';
                     document.getElementById('adminProdBadge').value = prod.badge || '';
-                    document.getElementById('adminProdImage').value = prod.image || '';
+                    
+                    const imgArr = (prod.images && prod.images.length > 0) ? prod.images : (prod.image ? [prod.image] : []);
+                    document.getElementById('adminProdImages').value = imgArr.join('\n');
+                    
                     document.getElementById('adminProdDesc').value = prod.desc || '';
                 }
             } else {
@@ -1205,7 +1209,11 @@
             const sizeLabel = document.getElementById('adminProdSizeLabel').value.trim() || null;
             const availabilityStatus = document.getElementById('adminProdStatus').value;
             const badge = document.getElementById('adminProdBadge').value.trim() || null;
-            const image = document.getElementById('adminProdImage').value.trim();
+            
+            const rawImages = document.getElementById('adminProdImages').value.split('\n').map(u => u.trim()).filter(Boolean);
+            const image = rawImages[0] || 'https://placehold.co/600x400/feeef4/e84880?text=Pink+Croissant';
+            const images = rawImages.length > 0 ? rawImages : [image];
+            
             const desc = document.getElementById('adminProdDesc').value.trim();
 
             if (prodId) {
@@ -1225,7 +1233,7 @@
                         badge,
                         image,
                         desc,
-                        images: [image]
+                        images
                     };
                     showToast('Product updated successfully! ✨');
                 }
@@ -1244,7 +1252,7 @@
                     availabilityStatus,
                     badge,
                     image,
-                    images: [image],
+                    images,
                     desc
                 };
                 products.unshift(newProduct);
