@@ -126,6 +126,20 @@
             </p>
         </div>
 
+         <!-- OWNER MODE NOTICE (Hidden by default) -->
+    <div id="adminTopPanel" class="hidden mb-6 bg-yellow-200 border-2 border-slate-900 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 odd-shadow-sm">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🛠️</span>
+        <div>
+          <h2 class="font-bold text-slate-900 font-brand">Owner Mode Active</h2>
+          <p class="text-xs text-slate-700">You can add new products or edit/delete existing ones below. Changes sync automatically!</p>
+        </div>
+      </div>
+      <button onclick="openProductModal()" class="px-4 py-2.5 bg-oddGreen hover:bg-oddGreen-hover text-slate-900 font-bold font-brand text-sm rounded-2xl border-2 border-slate-900 odd-shadow-sm transition flex items-center gap-2">
+          <i class="fa-solid fa-plus"></i> Add Product
+      </button>
+    </div>
+        
         <!-- Filter & Categories Area -->
         <div class="space-y-3">
             <div class="flex flex-wrap items-center gap-2" id="mainCategoriesBar"></div>
@@ -156,21 +170,52 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-pink-100 mt-16 py-8 text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <img src="https://i.postimg.cc/BZKt14Zp/pinkcroissant-LOGO.jpg" alt="Logo" class="w-8 h-8 rounded-full border border-pink-200 object-contain" onerror="this.src='https://placehold.co/40x40/feeef4/e84880?text=PC'">
-                <p class="font-bold text-slate-700" id="footerText">© 2026 Pink Croissant. Handmade Creations. Orders are processed through Instagram Direct Messaging. Add items to cart, and send us your request on Instagram to complete your order!</p>
-            </div>
-            <div class="flex items-center gap-4">
-                <span class="flex items-center gap-1.5 text-pink-600 font-extrabold">
-                    <i data-lucide="instagram" class="w-4 h-4"></i>
-                    <span id="footerIgDisplay">@thepinkcroissant_creations</span>
-                </span>
-            </div>
-        </div>
-    </footer>
+    <!-- FOOTER -->
+  <footer class="bg-rose-100 border-t-2 border-slate-900 mt-auto py-10">
+      <div class="max-w-7xl mx-auto px-4 text-center space-y-4">
+          <div class="flex justify-center items-center gap-2 text-slate-900 font-brand font-bold text-xl">
+              <i class="fa-brands fa-instagram text-oddPink"></i>
+              <span id="footerBrandName">The Odd Pair</span>
+          </div>
+          <p class="text-xs text-slate-600 max-w-md mx-auto font-medium">
+              Orders are processed through Instagram Direct Messaging. Add items to cart, and send us your request on Instagram to complete your order!
+          </p>
+          <div class="pt-4 text-xs text-slate-500 border-t border-rose-200 max-w-xs mx-auto flex items-center justify-between font-bold">
+              <span>&copy; <span id="currentYear"></span> The Odd Pair.</span>
+              <button onclick="openPasswordModal()" class="text-slate-700 hover:text-slate-900 underline">
+                  Owner Access
+              </button>
+          </div>
+      </div>
+  </footer>
+<!-- OWNER PASSWORD REQUIRED MODAL -->
+  <div id="passwordModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl border-2 border-slate-900 odd-shadow max-w-sm w-full p-6 relative">
+          <button onclick="closePasswordModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 text-lg">
+              <i class="fa-solid fa-xmark"></i>
+          </button>
+          <div class="text-center space-y-3">
+              <div class="w-12 h-12 bg-oddPink/30 border-2 border-slate-900 rounded-2xl flex items-center justify-center mx-auto text-slate-900 text-xl">
+                  <i class="fa-solid fa-key"></i>
+              </div>
+              <h3 class="text-2xl font-brand font-bold text-slate-900">Password Required</h3>
+              <p class="text-xs text-slate-500 font-medium">Please enter the owner authorization key to access administrative features.</p>
+             
+              <form onsubmit="submitPasswordForm(event)" class="space-y-4 pt-2">
+                  <div>
+                      <input type="password" id="ownerPinInput" required placeholder="••••••••••"
+                             class="w-full text-center tracking-widest text-lg px-4 py-3 bg-slate-50 border-2 border-slate-900 rounded-2xl font-bold focus:outline-none focus:ring-2 focus:ring-oddGreen">
+                  </div>
+                  <div id="pinErrorMsg" class="hidden text-xs font-bold text-rose-500">
+                      Incorrect authorization key.
+                  </div>
+                  <button type="submit" class="w-full py-3 bg-oddGreen border-2 border-slate-900 text-slate-900 font-brand font-bold text-sm rounded-2xl odd-shadow-sm hover:bg-oddGreen-hover transition">
+                      Authorize
+                  </button>
+              </form>
+          </div>
+      </div>
+  </div>
 
     <!-- PRODUCT DETAILS MODAL -->
     <div id="productModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300">
@@ -344,7 +389,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-
+        const OWNER_PIN = "7447";
         const instagramHandle = 'thepinkcroissant_creations';
         let currentMainCategory = 'all';
         let currentSubCategory = 'all';
@@ -1198,6 +1243,84 @@
                 toast.classList.remove('translate-y-0', 'opacity-100');
             }, duration);
         }
+
+   
+      window.openPasswordModal = function() {
+          if (isAdminLoggedIn) {
+              isAdminLoggedIn = false;
+              updateAdminUI();
+              showToast("Logged out of Owner Mode");
+              return;
+          }
+          const pinInput = document.getElementById('ownerPinInput');
+          if (pinInput) pinInput.value = '';
+          const errContainer = document.getElementById('pinErrorMsg');
+          if (errContainer) errContainer.classList.add('hidden');
+          document.getElementById('passwordModal').classList.remove('hidden');
+          setTimeout(() => pinInput && pinInput.focus(), 100);
+      };
+
+      window.closePasswordModal = function() {
+          document.getElementById('passwordModal').classList.add('hidden');
+      };
+
+      window.submitPasswordForm = async function(event) {
+          event.preventDefault();
+          const entered = document.getElementById('ownerPinInput').value;
+          if (entered === OWNER_PIN) {
+            try {
+              await signInAnonymously(auth);
+              isAdminLoggedIn = true;
+              closePasswordModal();
+              updateAdminUI();
+              showToast("Owner Mode Authorized!");
+            } catch (err) {
+              console.error("Auth error:", err);
+              showToast("Authentication failed!");
+            }
+          } else {
+              document.getElementById('pinErrorMsg').classList.remove('hidden');
+          }
+      };
+ function updateAdminUI() {
+          const adminTopPanel = document.getElementById('adminTopPanel');
+          if (adminTopPanel) {
+              if (isAdminLoggedIn) {
+                  adminTopPanel.classList.remove('hidden');
+              } else {
+                  adminTopPanel.classList.add('hidden');
+              }
+          }
+          renderProducts();
+      }
+        if (!modal || !form) return;
+          form.reset();
+
+          if (prodId) {
+              const prod = products.find(p => String(p.id) === String(prodId));
+              if (prod) {
+                  title.textContent = "Edit Product";
+                  document.getElementById('productId').value = prod.id;
+                  document.getElementById('prodTitle').value = prod.title;
+                  document.getElementById('prodPrice').value = prod.price;
+                  document.getElementById('prodCategory').value = prod.category;
+                  document.getElementById('prodImage').value = prod.image || '';
+                  document.getElementById('prodDesc').value = prod.description || '';
+                  document.getElementById('prodStock').value = prod.stockStatus || 'in_stock';
+              }
+          } else {
+              title.textContent = "Add New Product";
+              document.getElementById('productId').value = '';
+          }
+
+          modal.classList.remove('hidden');
+      };
+
+      window.closeProductModal = function() {
+          document.getElementById('productModal').classList.add('hidden');
+      };
+
+      window.onload = initApp;
     </script>
 </body>
 </html>
