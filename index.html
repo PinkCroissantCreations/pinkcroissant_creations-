@@ -20,19 +20,24 @@
                             500: '#e84880',
                             600: '#db2777',
                             700: '#be185d',
-                        }
+                        },
+                        oddGreen: '#a7f3d0',
+                        'oddGreen-hover': '#6ee7b7',
+                        oddPink: '#f4729f'
                     },
                     fontFamily: {
                         sans: ['Nunito', 'system-ui', 'sans-serif'],
+                        brand: ['Nunito', 'sans-serif']
                     }
                 }
             }
         }
     </script>
-    <!-- Google Fonts & Lucide Icons -->
+    <!-- Google Fonts & Lucide Icons & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { font-family: 'Nunito', sans-serif; }
@@ -47,6 +52,8 @@
         ::-webkit-scrollbar-track { background: #fff1f5; }
         ::-webkit-scrollbar-thumb { background: #fbb3ce; border-radius: 999px; }
         ::-webkit-scrollbar-thumb:hover { background: #f4729f; }
+        .odd-shadow-sm { box-shadow: 2px 2px 0px #0f172a; }
+        .odd-shadow { box-shadow: 4px 4px 0px #0f172a; }
     </style>
 </head>
 <body class="bg-[#fff9fb] text-slate-800 antialiased min-h-screen flex flex-col selection:bg-pink-200 selection:text-pink-800">
@@ -126,19 +133,19 @@
             </p>
         </div>
 
-         <!-- OWNER MODE NOTICE (Hidden by default) -->
-    <div id="adminTopPanel" class="hidden mb-6 bg-yellow-200 border-2 border-slate-900 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 odd-shadow-sm">
-      <div class="flex items-center gap-2">
-        <span class="text-xl">🛠️</span>
-        <div>
-          <h2 class="font-bold text-slate-900 font-brand">Owner Mode Active</h2>
-          <p class="text-xs text-slate-700">You can add new products or edit/delete existing ones below. Changes sync automatically!</p>
+        <!-- OWNER MODE NOTICE (Hidden by default) -->
+        <div id="adminTopPanel" class="hidden mb-6 bg-yellow-200 border-2 border-slate-900 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 odd-shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">🛠️</span>
+                <div>
+                    <h2 class="font-bold text-slate-900 font-brand">Owner Mode Active</h2>
+                    <p class="text-xs text-slate-700">You are logged in as the owner. Changes sync automatically!</p>
+                </div>
+            </div>
+            <button onclick="window.openPasswordModal()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl transition">
+                Exit Owner Mode
+            </button>
         </div>
-      </div>
-      <button onclick="openProductModal()" class="px-4 py-2.5 bg-oddGreen hover:bg-oddGreen-hover text-slate-900 font-bold font-brand text-sm rounded-2xl border-2 border-slate-900 odd-shadow-sm transition flex items-center gap-2">
-          <i class="fa-solid fa-plus"></i> Add Product
-      </button>
-    </div>
         
         <!-- Filter & Categories Area -->
         <div class="space-y-3">
@@ -171,57 +178,58 @@
     </main>
 
     <!-- FOOTER -->
-  <footer class="bg-rose-100 border-t-2 border-slate-900 mt-auto py-10">
-      <div class="max-w-7xl mx-auto px-4 text-center space-y-4">
-          <div class="flex justify-center items-center gap-2 text-slate-900 font-brand font-bold text-xl">
-              <i class="fa-brands fa-instagram text-oddPink"></i>
-              <span id="footerBrandName">The Odd Pair</span>
-          </div>
-          <p class="text-xs text-slate-600 max-w-md mx-auto font-medium">
-              Orders are processed through Instagram Direct Messaging. Add items to cart, and send us your request on Instagram to complete your order!
-          </p>
-          <div class="pt-4 text-xs text-slate-500 border-t border-rose-200 max-w-xs mx-auto flex items-center justify-between font-bold">
-              <span>&copy; <span id="currentYear"></span> The Odd Pair.</span>
-              <button onclick="openPasswordModal()" class="text-slate-700 hover:text-slate-900 underline">
-                  Owner Access
-              </button>
-          </div>
-      </div>
-  </footer>
-<!-- OWNER PASSWORD REQUIRED MODAL -->
-  <div id="passwordModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl border-2 border-slate-900 odd-shadow max-w-sm w-full p-6 relative">
-          <button onclick="closePasswordModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 text-lg">
-              <i class="fa-solid fa-xmark"></i>
-          </button>
-          <div class="text-center space-y-3">
-              <div class="w-12 h-12 bg-oddPink/30 border-2 border-slate-900 rounded-2xl flex items-center justify-center mx-auto text-slate-900 text-xl">
-                  <i class="fa-solid fa-key"></i>
-              </div>
-              <h3 class="text-2xl font-brand font-bold text-slate-900">Password Required</h3>
-              <p class="text-xs text-slate-500 font-medium">Please enter the owner authorization key to access administrative features.</p>
-             
-              <form onsubmit="submitPasswordForm(event)" class="space-y-4 pt-2">
-                  <div>
-                      <input type="password" id="ownerPinInput" required placeholder="••••••••••"
-                             class="w-full text-center tracking-widest text-lg px-4 py-3 bg-slate-50 border-2 border-slate-900 rounded-2xl font-bold focus:outline-none focus:ring-2 focus:ring-oddGreen">
-                  </div>
-                  <div id="pinErrorMsg" class="hidden text-xs font-bold text-rose-500">
-                      Incorrect authorization key.
-                  </div>
-                  <button type="submit" class="w-full py-3 bg-oddGreen border-2 border-slate-900 text-slate-900 font-brand font-bold text-sm rounded-2xl odd-shadow-sm hover:bg-oddGreen-hover transition">
-                      Authorize
-                  </button>
-              </form>
-          </div>
-      </div>
-  </div>
+    <footer class="bg-rose-100 border-t-2 border-slate-900 mt-auto py-10">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-4">
+            <div class="flex justify-center items-center gap-2 text-slate-900 font-brand font-bold text-xl">
+                <i data-lucide="instagram" class="w-5 h-5 text-pink-600"></i>
+                <span id="footerBrandName">Pink Croissant</span>
+            </div>
+            <p class="text-xs text-slate-600 max-w-md mx-auto font-medium">
+                Orders are processed through Instagram Direct Messaging. Add items to cart, and send us your request on Instagram to complete your order!
+            </p>
+            <div class="pt-4 text-xs text-slate-500 border-t border-rose-200 max-w-xs mx-auto flex items-center justify-between font-bold">
+                <span>&copy; <span id="currentYear">2026</span> Pink Croissant.</span>
+                <button onclick="window.openPasswordModal()" class="text-slate-700 hover:text-slate-900 underline">
+                    Owner Access
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- OWNER PASSWORD REQUIRED MODAL -->
+    <div id="passwordModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl border-2 border-slate-900 odd-shadow max-w-sm w-full p-6 relative">
+            <button onclick="window.closePasswordModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 text-lg">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="text-center space-y-3">
+                <div class="w-12 h-12 bg-pink-100 border-2 border-slate-900 rounded-2xl flex items-center justify-center mx-auto text-slate-900 text-xl">
+                    <i data-lucide="key-round" class="w-6 h-6 text-pink-600"></i>
+                </div>
+                <h3 class="text-2xl font-brand font-bold text-slate-900">Password Required</h3>
+                <p class="text-xs text-slate-500 font-medium">Please enter the owner authorization key to access administrative features.</p>
+                
+                <form onsubmit="window.submitPasswordForm(event)" class="space-y-4 pt-2">
+                    <div>
+                        <input type="password" id="ownerPinInput" required placeholder="••••••••••"
+                               class="w-full text-center tracking-widest text-lg px-4 py-3 bg-slate-50 border-2 border-slate-900 rounded-2xl font-bold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    </div>
+                    <div id="pinErrorMsg" class="hidden text-xs font-bold text-rose-500">
+                        Incorrect authorization key.
+                    </div>
+                    <button type="submit" class="w-full py-3 gradient-pink text-white font-bold text-sm rounded-2xl odd-shadow-sm hover:brightness-105 transition">
+                        Authorize
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- PRODUCT DETAILS MODAL -->
     <div id="productModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300">
         <div id="productModalCard" class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-pink-100 transform scale-95 transition-all duration-300 relative">
             
-            <button onclick="closeProductModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-pink-50 rounded-full transition-colors z-10">
+            <button onclick="window.closeProductModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-pink-50 rounded-full transition-colors z-10">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
 
@@ -266,11 +274,11 @@
                         <div class="flex items-center justify-between" id="modalQuantityRow">
                             <span class="text-xs font-black text-slate-700">Quantity:</span>
                             <div class="flex items-center bg-pink-50/70 border border-pink-200 rounded-xl shadow-xs p-1">
-                                <button onclick="changeModalQuantity(-1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-pink-600 hover:bg-white rounded-lg transition-colors font-black">
+                                <button onclick="window.changeModalQuantity(-1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-pink-600 hover:bg-white rounded-lg transition-colors font-black">
                                     <i data-lucide="minus" class="w-4 h-4"></i>
                                 </button>
                                 <span id="modalQuantityDisplay" class="text-sm font-black px-4 text-slate-900">1</span>
-                                <button onclick="changeModalQuantity(1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-pink-600 hover:bg-white rounded-lg transition-colors font-black">
+                                <button onclick="window.changeModalQuantity(1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-pink-600 hover:bg-white rounded-lg transition-colors font-black">
                                     <i data-lucide="plus" class="w-4 h-4"></i>
                                 </button>
                             </div>
@@ -294,7 +302,7 @@
     </div>
 
     <!-- CART SLIDE-OVER DRAWER -->
-    <div id="cartDrawerBackdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="toggleCartDrawer(false)"></div>
+    <div id="cartDrawerBackdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="window.toggleCartDrawer(false)"></div>
     <div id="cartDrawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
         
         <div class="p-5 border-b border-pink-100 flex items-center justify-between bg-pink-50/50">
@@ -307,7 +315,7 @@
                     <p class="text-xs text-pink-600 font-bold" id="cartSummaryHeader">0 items selected</p>
                 </div>
             </div>
-            <button onclick="toggleCartDrawer(false)" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-pink-100 rounded-full transition-colors">
+            <button onclick="window.toggleCartDrawer(false)" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-pink-100 rounded-full transition-colors">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -351,12 +359,12 @@
             </div>
 
             <div class="space-y-2 pt-1">
-                <button onclick="sendOrderViaInstagram()" 
+                <button onclick="window.sendOrderViaInstagram()" 
                         class="w-full gradient-pink hover:brightness-105 text-white py-3 px-4 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-pink-300/40 transition-all active:scale-[0.98]">
                     <i data-lucide="send" class="w-4 h-4"></i>
                     <span>Send Order Request via Instagram DM</span>
                 </button>
-                <button onclick="copyOrderMessage()" 
+                <button onclick="window.copyOrderMessage()" 
                         class="w-full bg-white hover:bg-pink-50 text-slate-700 border border-pink-200 py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-colors">
                     <i data-lucide="copy" class="w-3.5 h-3.5 text-pink-500"></i>
                     <span>Copy Order Message</span>
@@ -389,8 +397,11 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+
         const OWNER_PIN = "7447";
+        let isAdminLoggedIn = false;
         const instagramHandle = 'thepinkcroissant_creations';
+
         let currentMainCategory = 'all';
         let currentSubCategory = 'all';
         let currentBearSize = 'all';
@@ -605,7 +616,6 @@
             { id: 'large', name: 'Large' }
         ];
 
-        // Safe Initialization
         function initApp() {
             updateIgHandleDisplays();
             renderCategoryFilters();
@@ -624,9 +634,7 @@
 
         function updateIgHandleDisplays() {
             const hIg = document.getElementById('headerIgDisplay');
-            const fIg = document.getElementById('footerIgDisplay');
             if (hIg) hIg.innerText = '@' + instagramHandle;
-            if (fIg) fIg.innerText = '@' + instagramHandle;
         }
 
         window.setMainCategory = function(catId) {
@@ -921,7 +929,7 @@
             const imgList = (product.images && product.images.length > 0) ? product.images : [product.image];
             if (thumbsContainer) {
                 thumbsContainer.innerHTML = imgList.map((imgUrl, idx) => `
-                    <button onclick="setModalMainImage('${imgUrl}', this)" class="thumbnail-btn w-14 h-14 rounded-xl overflow-hidden border-2 transition-all ${idx === 0 ? 'border-pink-500 scale-95' : 'border-transparent opacity-70 hover:opacity-100'}">
+                    <button onclick="window.setModalMainImage('${imgUrl}', this)" class="thumbnail-btn w-14 h-14 rounded-xl overflow-hidden border-2 transition-all ${idx === 0 ? 'border-pink-500 scale-95' : 'border-transparent opacity-70 hover:opacity-100'}">
                         <img src="${imgUrl}" class="w-full h-full object-cover">
                     </button>
                 `).join('');
@@ -1069,7 +1077,7 @@
                         </div>
                         <p class="font-extrabold text-slate-700 text-sm mb-1">Your cart is empty</p>
                         <p class="text-xs text-slate-400 max-w-xs mb-4">Choose some knitted goods, bears or art to get started!</p>
-                        <button onclick="toggleCartDrawer(false)" class="text-xs font-black text-pink-600 hover:text-pink-700 underline">
+                        <button onclick="window.toggleCartDrawer(false)" class="text-xs font-black text-pink-600 hover:text-pink-700 underline">
                             Back to products
                         </button>
                     </div>
@@ -1099,11 +1107,11 @@
                         
                         <div class="flex items-center gap-2">
                             <div class="flex items-center bg-white border border-pink-200 rounded-lg shadow-xs">
-                                <button onclick="updateQuantity(${item.id}, -1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
+                                <button onclick="window.updateQuantity(${item.id}, -1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
                                     <i data-lucide="minus" class="w-3 h-3"></i>
                                 </button>
                                 <span class="text-xs font-black px-2 text-slate-800">${item.quantity}</span>
-                                <button onclick="updateQuantity(${item.id}, 1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
+                                <button onclick="window.updateQuantity(${item.id}, 1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
                                     <i data-lucide="plus" class="w-3 h-3"></i>
                                 </button>
                             </div>
@@ -1113,7 +1121,7 @@
                         </div>
                     </div>
 
-                    <button onclick="removeFromCart(${item.id})" class="p-1.5 text-slate-400 hover:text-rose-500 transition-colors" title="Remove">
+                    <button onclick="window.removeFromCart(${item.id})" class="p-1.5 text-slate-400 hover:text-rose-500 transition-colors" title="Remove">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -1164,7 +1172,7 @@
                 const prod = products.find(p => p.id === item.id);
                 const prodName = prod ? prod.name : 'Item';
                 const itemTotal = (item.price * item.quantity).toFixed(2);
-                lines.push((index + 1) + '. ' + prodName + '\n   └ Qty: ' + item.quantity + ' x €' + item.price.toFixed(2) + ' = €' + itemTotal);
+                lines.push((index + 1) + '. ' + prodName + '\\n   └ Qty: ' + item.quantity + ' x €' + item.price.toFixed(2) + ' = €' + itemTotal);
             });
 
             lines.push('------------------------------------');
@@ -1178,7 +1186,7 @@
             lines.push('');
             lines.push('Hello! I would love to order the items above. Please let me know regarding availability and payment methods. Thank you so much! 🌸✨');
 
-            return lines.join('\n');
+            return lines.join('\\n');
         }
 
         window.copyOrderMessage = function(quiet = false) {
@@ -1244,83 +1252,58 @@
             }, duration);
         }
 
-   
-      window.openPasswordModal = function() {
-          if (isAdminLoggedIn) {
-              isAdminLoggedIn = false;
-              updateAdminUI();
-              showToast("Logged out of Owner Mode");
-              return;
-          }
-          const pinInput = document.getElementById('ownerPinInput');
-          if (pinInput) pinInput.value = '';
-          const errContainer = document.getElementById('pinErrorMsg');
-          if (errContainer) errContainer.classList.add('hidden');
-          document.getElementById('passwordModal').classList.remove('hidden');
-          setTimeout(() => pinInput && pinInput.focus(), 100);
-      };
-
-      window.closePasswordModal = function() {
-          document.getElementById('passwordModal').classList.add('hidden');
-      };
-
-      window.submitPasswordForm = async function(event) {
-          event.preventDefault();
-          const entered = document.getElementById('ownerPinInput').value;
-          if (entered === OWNER_PIN) {
-            try {
-              await signInAnonymously(auth);
-              isAdminLoggedIn = true;
-              closePasswordModal();
-              updateAdminUI();
-              showToast("Owner Mode Authorized!");
-            } catch (err) {
-              console.error("Auth error:", err);
-              showToast("Authentication failed!");
+        window.openPasswordModal = function() {
+            if (isAdminLoggedIn) {
+                isAdminLoggedIn = false;
+                updateAdminUI();
+                showToast("Logged out of Owner Mode");
+                return;
             }
-          } else {
-              document.getElementById('pinErrorMsg').classList.remove('hidden');
-          }
-      };
- function updateAdminUI() {
-          const adminTopPanel = document.getElementById('adminTopPanel');
-          if (adminTopPanel) {
-              if (isAdminLoggedIn) {
-                  adminTopPanel.classList.remove('hidden');
-              } else {
-                  adminTopPanel.classList.add('hidden');
-              }
-          }
-          renderProducts();
-      }
-        if (!modal || !form) return;
-          form.reset();
+            const pinInput = document.getElementById('ownerPinInput');
+            if (pinInput) pinInput.value = '';
+            const errContainer = document.getElementById('pinErrorMsg');
+            if (errContainer) errContainer.classList.add('hidden');
+            const pModal = document.getElementById('passwordModal');
+            if (pModal) pModal.classList.remove('hidden');
+            setTimeout(() => pinInput && pinInput.focus(), 100);
+        };
 
-          if (prodId) {
-              const prod = products.find(p => String(p.id) === String(prodId));
-              if (prod) {
-                  title.textContent = "Edit Product";
-                  document.getElementById('productId').value = prod.id;
-                  document.getElementById('prodTitle').value = prod.title;
-                  document.getElementById('prodPrice').value = prod.price;
-                  document.getElementById('prodCategory').value = prod.category;
-                  document.getElementById('prodImage').value = prod.image || '';
-                  document.getElementById('prodDesc').value = prod.description || '';
-                  document.getElementById('prodStock').value = prod.stockStatus || 'in_stock';
-              }
-          } else {
-              title.textContent = "Add New Product";
-              document.getElementById('productId').value = '';
-          }
+        window.closePasswordModal = function() {
+            const pModal = document.getElementById('passwordModal');
+            if (pModal) pModal.classList.add('hidden');
+        };
 
-          modal.classList.remove('hidden');
-      };
+        window.submitPasswordForm = async function(event) {
+            event.preventDefault();
+            const entered = document.getElementById('ownerPinInput').value;
+            if (entered === OWNER_PIN) {
+                try {
+                    await signInAnonymously(auth);
+                    isAdminLoggedIn = true;
+                    window.closePasswordModal();
+                    updateAdminUI();
+                    showToast("Owner Mode Authorized!");
+                } catch (err) {
+                    console.error("Auth error:", err);
+                    showToast("Authentication failed!");
+                }
+            } else {
+                const errContainer = document.getElementById('pinErrorMsg');
+                if (errContainer) errContainer.classList.remove('hidden');
+            }
+        };
 
-      window.closeProductModal = function() {
-          document.getElementById('productModal').classList.add('hidden');
-      };
-
-      window.onload = initApp;
+        function updateAdminUI() {
+            const adminTopPanel = document.getElementById('adminTopPanel');
+            if (adminTopPanel) {
+                if (isAdminLoggedIn) {
+                    adminTopPanel.classList.remove('hidden');
+                } else {
+                    adminTopPanel.classList.add('hidden');
+                }
+            }
+            renderProducts();
+        }
     </script>
 </body>
 </html>
