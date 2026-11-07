@@ -140,7 +140,7 @@
                 </div>
                 <div>
                     <h3 class="font-black text-slate-900 text-base">Owner Mode Active</h3>
-                    <p class="text-xs text-slate-600 font-medium">You can add new products or edit/delete any existing item directly on the page.</p>
+                    <p class="text-xs text-slate-600 font-medium">You can add new products or edit/delete any existing item directly on the page. All changes sync live globally!</p>
                 </div>
             </div>
             <div class="flex items-center gap-2.5">
@@ -326,10 +326,30 @@
                 </div>
 
                 <div>
-                    <label class="block font-black text-slate-700 mb-1">Image URLs (one per line) *</label>
-                    <textarea id="adminProdImages" rows="3" required placeholder="https://image1.jpg&#10;https://image2.jpg"
-                              class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300"></textarea>
-                    <p class="text-[10px] text-slate-400 mt-0.5">The first image will be the cover photo. Visitors can browse all photos inside the item details modal.</p>
+                    <label class="block font-black text-slate-700 mb-1.5">Product Photos *</label>
+                    
+                    <!-- File upload zone from PC -->
+                    <div onclick="document.getElementById('adminProdFileInput').click()" 
+                         class="border-2 border-dashed border-pink-300 hover:border-pink-500 bg-pink-50/40 hover:bg-pink-50 p-4 rounded-2xl text-center cursor-pointer transition flex flex-col items-center justify-center gap-1.5">
+                        <div class="w-9 h-9 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center">
+                            <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+                        </div>
+                        <p class="text-xs font-black text-slate-800">Choose Photos from PC</p>
+                        <p class="text-[10px] text-slate-400">Click to pick one or multiple image files (JPG, PNG, WEBP)</p>
+                    </div>
+                    <input type="file" id="adminProdFileInput" multiple accept="image/*" class="hidden" onchange="window.handleAdminImageFiles(this.files)">
+
+                    <!-- Preview of selected/existing photos -->
+                    <div id="adminImagesPreviewList" class="flex flex-wrap gap-2 pt-2.5 min-h-[44px]"></div>
+                    <p class="text-[10px] text-slate-400 mt-1">The first image is the cover photo. You can remove or add more photos at any time.</p>
+
+                    <!-- Optional URL fallback input -->
+                    <details class="mt-2 text-[11px] text-slate-500 cursor-pointer">
+                        <summary class="font-bold hover:text-pink-600">Or paste image URLs manually</summary>
+                        <textarea id="adminProdImages" rows="2" placeholder="https://image1.jpg&#10;https://image2.jpg"
+                                  class="w-full mt-1.5 bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300"
+                                  oninput="window.syncUrlsToPreview()"></textarea>
+                    </details>
                 </div>
 
                 <div>
@@ -506,11 +526,20 @@
         <span id="toastMessage">Item added to cart!</span>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC (FIREBASE CLOUD REALTIME SYNC) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { 
+            getFirestore, 
+            collection, 
+            onSnapshot, 
+            doc, 
+            setDoc, 
+            deleteDoc,
+            getDocs,
+            writeBatch 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyAHoc709jxhwBFRwhnv8MEUhcEFxEABHNU",
@@ -538,40 +567,8 @@
         let activeProduct = null;
         let activeProductQty = 1;
 
-        // AVAILABILITY BADGES HELPER
-        function getAvailabilityBadgeData(product) {
-            const status = product.availabilityStatus || 'in_stock';
-
-            if (status === 'out_of_stock' || (product.stock !== undefined && product.stock <= 0)) {
-                return {
-                    class: 'bg-rose-50 text-rose-700 border-rose-200',
-                    dotClass: 'bg-rose-500',
-                    icon: 'slash',
-                    label: 'Sold Out',
-                    isOutOfStock: true
-                };
-            } else if (status === 'made_to_order') {
-                return {
-                    class: 'bg-sky-50 text-sky-700 border-sky-200',
-                    dotClass: 'bg-sky-500',
-                    icon: 'clock',
-                    label: 'Made to Order',
-                    isOutOfStock: false
-                };
-            } else {
-                const countText = '(' + (product.stock || 1) + ' pcs)';
-                return {
-                    class: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                    dotClass: 'bg-emerald-500',
-                    icon: 'check-circle',
-                    label: 'In Stock ' + countText,
-                    isOutOfStock: false
-                };
-            }
-        }
-
-        // ================= PRODUCT LIST =================
-        let products = [
+        // INITIAL DEFAULT PRODUCTS (Used for seeding Firestore on first startup)
+        const initialDefaultProducts = [
             {
                 id: 1,
                 name: 'Bubble Bee Crochet Bear',
@@ -722,6 +719,51 @@
             }
         ];
 
+        let products = [...initialDefaultProducts];
+
+        // ================= GLOBAL LIVE FIRESTORE SYNC =================
+        const productsColRef = collection(db, "products");
+
+        // Realtime listener: Whenever any device adds, edits, or deletes a product,
+        // every client running the site updates instantly!
+        onSnapshot(productsColRef, async (snapshot) => {
+            if (snapshot.empty) {
+                // If cloud database is empty, seed it once with the initial products
+                try {
+                    const batch = writeBatch(db);
+                    initialDefaultProducts.forEach(prod => {
+                        const docRef = doc(db, "products", String(prod.id));
+                        batch.set(docRef, prod);
+                    });
+                    await batch.commit();
+                    console.log("Firestore initialized with default products.");
+                } catch (err) {
+                    console.warn("Could not seed initial products to Firestore:", err);
+                    renderProducts();
+                }
+            } else {
+                const cloudProds = [];
+                snapshot.forEach(docSnap => {
+                    cloudProds.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                
+                // Sort products to maintain consistent order
+                cloudProds.sort((a, b) => {
+                    const numA = Number(a.id) || 0;
+                    const numB = Number(b.id) || 0;
+                    return numA - numB;
+                });
+
+                products = cloudProds;
+                renderProducts();
+                renderCart();
+            }
+        }, (error) => {
+            console.error("Firestore sync error:", error);
+            // Fallback to local array if offline/permission issue
+            renderProducts();
+        });
+
         // Categories (Words only, no icons)
         const mainCategories = [
             { id: 'all', name: 'All' },
@@ -742,6 +784,38 @@
             { id: 'medium', name: 'Medium' },
             { id: 'large', name: 'Large' }
         ];
+
+        // AVAILABILITY BADGES HELPER
+        function getAvailabilityBadgeData(product) {
+            const status = product.availabilityStatus || 'in_stock';
+
+            if (status === 'out_of_stock' || (product.stock !== undefined && product.stock <= 0)) {
+                return {
+                    class: 'bg-rose-50 text-rose-700 border-rose-200',
+                    dotClass: 'bg-rose-500',
+                    icon: 'slash',
+                    label: 'Sold Out',
+                    isOutOfStock: true
+                };
+            } else if (status === 'made_to_order') {
+                return {
+                    class: 'bg-sky-50 text-sky-700 border-sky-200',
+                    dotClass: 'bg-sky-500',
+                    icon: 'clock',
+                    label: 'Made to Order',
+                    isOutOfStock: false
+                };
+            } else {
+                const countText = '(' + (product.stock || 1) + ' pcs)';
+                return {
+                    class: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                    dotClass: 'bg-emerald-500',
+                    icon: 'check-circle',
+                    label: 'In Stock ' + countText,
+                    isOutOfStock: false
+                };
+            }
+        }
 
         function initApp() {
             updateIgHandleDisplays();
@@ -889,8 +963,8 @@
                 if (currentMainCategory === 'knitted' && currentSubCategory === 'bears' && currentBearSize !== 'all' && p.size !== currentBearSize) return false;
 
                 if (searchQuery) {
-                    const matchName = p.name.toLowerCase().includes(searchQuery);
-                    const matchDesc = p.desc.toLowerCase().includes(searchQuery);
+                    const matchName = p.name ? p.name.toLowerCase().includes(searchQuery) : false;
+                    const matchDesc = p.desc ? p.desc.toLowerCase().includes(searchQuery) : false;
                     if (!matchName && !matchDesc) return false;
                 }
 
@@ -911,15 +985,15 @@
                 const avail = getAvailabilityBadgeData(prod);
 
                 return `
-                <div class="group bg-white rounded-3xl border border-pink-100 overflow-hidden shadow-xs hover:shadow-xl hover:border-pink-300 transition-all duration-300 flex flex-col justify-between cursor-pointer relative" onclick="window.openProductModal(${prod.id})">
+                <div class="group bg-white rounded-3xl border border-pink-100 overflow-hidden shadow-xs hover:shadow-xl hover:border-pink-300 transition-all duration-300 flex flex-col justify-between cursor-pointer relative" onclick="window.openProductModal('${prod.id}')">
                     
                     ${isAdminLoggedIn ? `
                         <!-- OWNER ACTIONS (Edit / Delete) -->
                         <div class="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-2xl shadow-md" onclick="event.stopPropagation()">
-                            <button onclick="window.openProductAdminModal(${prod.id})" title="Edit Product" class="w-7 h-7 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-900 flex items-center justify-center transition active:scale-95">
+                            <button onclick="window.openProductAdminModal('${prod.id}')" title="Edit Product" class="w-7 h-7 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-900 flex items-center justify-center transition active:scale-95">
                                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
                             </button>
-                            <button onclick="window.deleteProductAdmin(${prod.id})" title="Delete Product" class="w-7 h-7 rounded-xl bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center transition active:scale-95">
+                            <button onclick="window.deleteProductAdmin('${prod.id}')" title="Delete Product" class="w-7 h-7 rounded-xl bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center transition active:scale-95">
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
@@ -978,7 +1052,7 @@
                                     Sold Out
                                 </span>
                             ` : `
-                                <button onclick="window.addToCart(${prod.id}, 1)" 
+                                <button onclick="window.addToCart('${prod.id}', 1)" 
                                         class="gradient-pink hover:brightness-105 text-white text-xs font-black px-4 py-2.5 rounded-2xl flex items-center gap-1.5 shadow-md shadow-pink-200 active:scale-95 transition-all">
                                     <i data-lucide="plus" class="w-4 h-4"></i>
                                     <span>Add</span>
@@ -994,7 +1068,7 @@
         }
 
         window.openProductModal = function(productId) {
-            const product = products.find(p => p.id === productId);
+            const product = products.find(p => String(p.id) === String(productId));
             if (!product) return;
 
             activeProduct = product;
@@ -1151,7 +1225,71 @@
             }
         });
 
-        // ================= OWNER CRUD FUNCTIONS =================
+        // ================= IMAGE UPLOAD FROM PC (BASE64) =================
+        let adminCurrentImages = [];
+
+        window.handleAdminImageFiles = function(files) {
+            if (!files || files.length === 0) return;
+            const fileList = Array.from(files);
+            let processed = 0;
+
+            fileList.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    adminCurrentImages.push(e.target.result);
+                    processed++;
+                    if (processed === fileList.length) {
+                        window.renderAdminImagesPreview();
+                        showToast(`Added ${fileList.length} photo(s) from PC! 📷`);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+            document.getElementById('adminProdFileInput').value = '';
+        };
+
+        window.renderAdminImagesPreview = function() {
+            const container = document.getElementById('adminImagesPreviewList');
+            const urlTextarea = document.getElementById('adminProdImages');
+            if (!container) return;
+
+            if (adminCurrentImages.length === 0) {
+                container.innerHTML = '<span class="text-[11px] text-rose-400 font-semibold italic">No photos selected yet.</span>';
+                if (urlTextarea) urlTextarea.value = '';
+                return;
+            }
+
+            container.innerHTML = adminCurrentImages.map((imgSrc, idx) => `
+                <div class="relative w-14 h-14 rounded-xl overflow-hidden border ${idx === 0 ? 'border-pink-500 ring-2 ring-pink-300' : 'border-pink-200'} group bg-pink-50">
+                    <img src="${imgSrc}" class="w-full h-full object-cover">
+                    ${idx === 0 ? '<span class="absolute bottom-0 inset-x-0 bg-pink-600 text-white text-[8px] font-black text-center py-0.5">Cover</span>' : ''}
+                    <button type="button" onclick="window.removeAdminImage(${idx})" 
+                            class="absolute top-1 right-1 w-4 h-4 rounded-full bg-slate-900/80 text-white hover:bg-rose-500 flex items-center justify-center text-[10px] transition">
+                        ×
+                    </button>
+                </div>
+            `).join('');
+
+            const urlOnly = adminCurrentImages.filter(src => src.startsWith('http'));
+            if (urlTextarea && urlOnly.length > 0) {
+                urlTextarea.value = urlOnly.join('\n');
+            }
+        };
+
+        window.removeAdminImage = function(index) {
+            adminCurrentImages.splice(index, 1);
+            window.renderAdminImagesPreview();
+        };
+
+        window.syncUrlsToPreview = function() {
+            const textarea = document.getElementById('adminProdImages');
+            if (!textarea) return;
+            const urls = textarea.value.split('\n').map(u => u.trim()).filter(u => u.startsWith('http'));
+            adminCurrentImages = adminCurrentImages.filter(src => !src.startsWith('http')).concat(urls);
+            window.renderAdminImagesPreview();
+        };
+
+        // ================= OWNER CRUD FUNCTIONS (DIRECT TO FIRESTORE CLOUD) =================
         window.openProductAdminModal = function(prodId = null) {
             const modal = document.getElementById('productAdminModal');
             const form = document.getElementById('adminProductForm');
@@ -1161,12 +1299,12 @@
             form.reset();
 
             if (prodId) {
-                const prod = products.find(p => p.id === Number(prodId));
+                const prod = products.find(p => String(p.id) === String(prodId));
                 if (prod) {
                     heading.innerText = 'Edit Product';
                     document.getElementById('adminProdId').value = prod.id;
-                    document.getElementById('adminProdName').value = prod.name;
-                    document.getElementById('adminProdPrice').value = prod.price;
+                    document.getElementById('adminProdName').value = prod.name || '';
+                    document.getElementById('adminProdPrice').value = prod.price || '';
                     document.getElementById('adminProdStock').value = prod.stock !== undefined ? prod.stock : 5;
                     document.getElementById('adminProdMainCat').value = prod.mainCategory || 'knitted';
                     document.getElementById('adminProdSubCat').value = prod.subCategory || '';
@@ -1174,10 +1312,8 @@
                     document.getElementById('adminProdSizeLabel').value = prod.sizeLabel || '';
                     document.getElementById('adminProdStatus').value = prod.availabilityStatus || 'in_stock';
                     document.getElementById('adminProdBadge').value = prod.badge || '';
-                    
-                    const imgArr = (prod.images && prod.images.length > 0) ? prod.images : (prod.image ? [prod.image] : []);
-                    document.getElementById('adminProdImages').value = imgArr.join('\n');
-                    
+                    adminCurrentImages = (prod.images && prod.images.length > 0) ? [...prod.images] : (prod.image ? [prod.image] : []);
+                    window.renderAdminImagesPreview();
                     document.getElementById('adminProdDesc').value = prod.desc || '';
                 }
             } else {
@@ -1185,6 +1321,8 @@
                 document.getElementById('adminProdId').value = '';
                 document.getElementById('adminProdStock').value = 5;
                 document.getElementById('adminProdStatus').value = 'in_stock';
+                adminCurrentImages = [];
+                window.renderAdminImagesPreview();
             }
 
             modal.classList.remove('hidden');
@@ -1196,7 +1334,7 @@
             if (modal) modal.classList.add('hidden');
         };
 
-        window.saveProductAdmin = function(event) {
+        window.saveProductAdmin = async function(event) {
             event.preventDefault();
 
             const prodId = document.getElementById('adminProdId').value;
@@ -1210,79 +1348,67 @@
             const availabilityStatus = document.getElementById('adminProdStatus').value;
             const badge = document.getElementById('adminProdBadge').value.trim() || null;
             
-            const rawImages = document.getElementById('adminProdImages').value.split('\n').map(u => u.trim()).filter(Boolean);
-            const image = rawImages[0] || 'https://placehold.co/600x400/feeef4/e84880?text=Pink+Croissant';
-            const images = rawImages.length > 0 ? rawImages : [image];
-            
+            if (adminCurrentImages.length === 0) {
+                showToast('Please select at least one photo from your PC or enter a URL!');
+                return;
+            }
+            const image = adminCurrentImages[0];
+            const images = [...adminCurrentImages];
             const desc = document.getElementById('adminProdDesc').value.trim();
 
-            if (prodId) {
-                // Edit existing product
-                const index = products.findIndex(p => p.id === Number(prodId));
-                if (index !== -1) {
-                    products[index] = {
-                        ...products[index],
-                        name,
-                        price,
-                        stock,
-                        mainCategory,
-                        subCategory,
-                        size,
-                        sizeLabel,
-                        availabilityStatus,
-                        badge,
-                        image,
-                        desc,
-                        images
-                    };
-                    showToast('Product updated successfully! ✨');
-                }
-            } else {
-                // Add new product
-                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-                const newProduct = {
-                    id: newId,
-                    name,
-                    price,
-                    stock,
-                    mainCategory,
-                    subCategory,
-                    size,
-                    sizeLabel,
-                    availabilityStatus,
-                    badge,
-                    image,
-                    images,
-                    desc
-                };
-                products.unshift(newProduct);
-                showToast('New product added successfully! 🎉');
-            }
+            const finalId = prodId ? String(prodId) : String(Date.now());
+            const productData = {
+                id: finalId,
+                name,
+                price,
+                stock,
+                mainCategory,
+                subCategory,
+                size,
+                sizeLabel,
+                availabilityStatus,
+                badge,
+                image,
+                images,
+                desc
+            };
 
-            window.closeProductAdminModal();
-            renderProducts();
+            try {
+                // Save directly to Firebase Firestore
+                await setDoc(doc(db, "products", finalId), productData);
+                showToast(prodId ? 'Product updated globally! ✨' : 'Product added globally! 🎉');
+                window.closeProductAdminModal();
+            } catch (err) {
+                console.error("Firestore save error:", err);
+                showToast('Error saving to cloud: ' + err.message);
+            }
         };
 
-        window.deleteProductAdmin = function(prodId) {
-            const prod = products.find(p => p.id === Number(prodId));
+        window.deleteProductAdmin = async function(prodId) {
+            const prod = products.find(p => String(p.id) === String(prodId));
             if (!prod) return;
 
-            const confirmed = window.confirm(`Are you sure you want to delete "${prod.name}"?`);
+            const confirmed = window.confirm(`Are you sure you want to permanently delete "${prod.name}" globally?`);
             if (confirmed) {
-                products = products.filter(p => p.id !== Number(prodId));
-                cart = cart.filter(item => item.id !== Number(prodId));
-                renderProducts();
-                renderCart();
-                showToast('Product deleted.');
+                try {
+                    // Delete from Firebase Firestore
+                    await deleteDoc(doc(db, "products", String(prodId)));
+                    cart = cart.filter(item => String(item.id) !== String(prodId));
+                    renderCart();
+                    showToast('Product permanently deleted from cloud.');
+                } catch (err) {
+                    console.error("Firestore delete error:", err);
+                    showToast('Error deleting from cloud: ' + err.message);
+                }
             }
         };
 
         // Cart Actions
         window.addToCart = function(productId, quantity = 1) {
-            const product = products.find(p => p.id === productId);
+            const product = products.find(p => String(p.id) === String(productId));
             if (!product) return;
 
-            const existingIndex = cart.findIndex(item => item.id === productId);
+            const existingIndex = cart.findIndex(item => String(item.id) === String(productId));
             if (existingIndex > -1) {
                 cart[existingIndex].quantity += quantity;
             } else {
@@ -1299,7 +1425,7 @@
         };
 
         window.updateQuantity = function(productId, delta) {
-            const index = cart.findIndex(item => item.id === productId);
+            const index = cart.findIndex(item => String(item.id) === String(productId));
             if (index === -1) return;
 
             cart[index].quantity += delta;
@@ -1310,7 +1436,7 @@
         };
 
         window.removeFromCart = function(productId) {
-            cart = cart.filter(item => item.id !== productId);
+            cart = cart.filter(item => String(item.id) !== String(productId));
             renderCart();
         };
 
@@ -1326,7 +1452,7 @@
             if (summaryHeader) summaryHeader.innerText = totalItemsCount + (totalItemsCount === 1 ? ' item' : ' items') + ' selected';
 
             const totalPrice = cart.reduce((sum, item) => {
-                const prod = products.find(p => p.id === item.id);
+                const prod = products.find(p => String(p.id) === String(item.id));
                 return sum + ((prod ? Number(prod.price) : Number(item.price)) * item.quantity);
             }, 0);
 
@@ -1354,7 +1480,7 @@
             }
 
             container.innerHTML = cart.map(item => {
-                const product = products.find(p => p.id === item.id);
+                const product = products.find(p => String(p.id) === String(item.id));
                 const name = product ? product.name : 'Item';
                 const sizeLabel = product && product.sizeLabel ? ' (' + product.sizeLabel + ')' : '';
 
@@ -1374,11 +1500,11 @@
                         
                         <div class="flex items-center gap-2">
                             <div class="flex items-center bg-white border border-pink-200 rounded-lg shadow-xs">
-                                <button onclick="window.updateQuantity(${item.id}, -1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
+                                <button onclick="window.updateQuantity('${item.id}', -1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
                                     <i data-lucide="minus" class="w-3 h-3"></i>
                                 </button>
                                 <span class="text-xs font-black px-2 text-slate-800">${item.quantity}</span>
-                                <button onclick="window.updateQuantity(${item.id}, 1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
+                                <button onclick="window.updateQuantity('${item.id}', 1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
                                     <i data-lucide="plus" class="w-3 h-3"></i>
                                 </button>
                             </div>
@@ -1388,7 +1514,7 @@
                         </div>
                     </div>
 
-                    <button onclick="window.removeFromCart(${item.id})" class="p-1.5 text-slate-400 hover:text-rose-500 transition-colors" title="Remove">
+                    <button onclick="window.removeFromCart('${item.id}')" class="p-1.5 text-slate-400 hover:text-rose-500 transition-colors" title="Remove">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -1424,153 +1550,4 @@
             const notesInput = document.getElementById('custNotes');
 
             const name = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : '-';
-            const phone = (phoneInput && phoneInput.value.trim()) ? phoneInput.value.trim() : '-';
-            const city = (cityInput && cityInput.value.trim()) ? cityInput.value.trim() : '-';
-            const notes = (notesInput && notesInput.value.trim()) ? notesInput.value.trim() : '-';
-            const totalPrice = cart.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0).toFixed(2);
-
-            let lines = [
-                '🥐 *NEW ORDER REQUEST | PINK CROISSANT*',
-                '------------------------------------',
-                '📋 *ITEMS:*'
-            ];
-
-            cart.forEach((item, index) => {
-                const prod = products.find(p => p.id === item.id);
-                const prodName = prod ? prod.name : 'Item';
-                const itemTotal = (Number(item.price) * item.quantity).toFixed(2);
-                lines.push((index + 1) + '. ' + prodName + '\\n   └ Qty: ' + item.quantity + ' x €' + Number(item.price).toFixed(2) + ' = €' + itemTotal);
-            });
-
-            lines.push('------------------------------------');
-            lines.push('💰 *TOTAL:* €' + totalPrice);
-            lines.push('');
-            lines.push('👤 *CUSTOMER INFO:*');
-            lines.push('• Name: ' + name);
-            lines.push('• Phone: ' + phone);
-            lines.push('• City: ' + city);
-            if (notes !== '-') lines.push('• Notes: ' + notes);
-            lines.push('');
-            lines.push('Hello! I would love to order the items above. Please let me know regarding availability and payment methods. Thank you so much! 🌸✨');
-
-            return lines.join('\\n');
-        }
-
-        window.copyOrderMessage = function(quiet = false) {
-            const text = generateOrderText();
-            if (!text) {
-                showToast('Please add products to your cart first!');
-                return false;
-            }
-
-            const tempInput = document.createElement('textarea');
-            tempInput.value = text;
-            tempInput.style.position = 'fixed';
-            tempInput.style.left = '-9999px';
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            
-            let success = false;
-            try {
-                success = document.execCommand('copy');
-            } catch (err) {
-                console.error('Clipboard copy failed:', err);
-            }
-            document.body.removeChild(tempInput);
-
-            if (!quiet) {
-                showToast(success ? 'Order copied to clipboard! 📋' : 'Failed to copy.');
-            }
-            return success;
-        };
-
-        window.sendOrderViaInstagram = function() {
-            if (cart.length === 0) {
-                showToast('Please add products to your cart first!');
-                return;
-            }
-
-            copyOrderMessage(true);
-
-            const igDirectUrl = 'https://ig.me/m/' + instagramHandle;
-            showToast('Copied! Opening Instagram DM... 💌', 2500);
-
-            setTimeout(() => {
-                window.open(igDirectUrl, '_blank');
-            }, 500);
-        };
-
-        // Toast Helper
-        let toastTimeout;
-        function showToast(message, duration = 3000) {
-            const toast = document.getElementById('toast');
-            const msgElem = document.getElementById('toastMessage');
-            if (!toast || !msgElem) return;
-            
-            clearTimeout(toastTimeout);
-            msgElem.innerText = message;
-            
-            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
-            toast.classList.add('translate-y-0', 'opacity-100');
-
-            toastTimeout = setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
-                toast.classList.remove('translate-y-0', 'opacity-100');
-            }, duration);
-        }
-
-        window.openPasswordModal = function() {
-            if (isAdminLoggedIn) {
-                isAdminLoggedIn = false;
-                updateAdminUI();
-                showToast("Logged out of Owner Mode");
-                return;
-            }
-            const pinInput = document.getElementById('ownerPinInput');
-            if (pinInput) pinInput.value = '';
-            const errContainer = document.getElementById('pinErrorMsg');
-            if (errContainer) errContainer.classList.add('hidden');
-            const pModal = document.getElementById('passwordModal');
-            if (pModal) pModal.classList.remove('hidden');
-            setTimeout(() => pinInput && pinInput.focus(), 100);
-        };
-
-        window.closePasswordModal = function() {
-            const pModal = document.getElementById('passwordModal');
-            if (pModal) pModal.classList.add('hidden');
-        };
-
-        window.submitPasswordForm = async function(event) {
-            event.preventDefault();
-            const entered = document.getElementById('ownerPinInput').value;
-            if (entered === OWNER_PIN) {
-                try {
-                    await signInAnonymously(auth);
-                    isAdminLoggedIn = true;
-                    window.closePasswordModal();
-                    updateAdminUI();
-                    showToast("Owner Mode Authorized!");
-                } catch (err) {
-                    console.error("Auth error:", err);
-                    showToast("Authentication failed!");
-                }
-            } else {
-                const errContainer = document.getElementById('pinErrorMsg');
-                if (errContainer) errContainer.classList.remove('hidden');
-            }
-        };
-
-        function updateAdminUI() {
-            const adminTopPanel = document.getElementById('adminTopPanel');
-            if (adminTopPanel) {
-                if (isAdminLoggedIn) {
-                    adminTopPanel.classList.remove('hidden');
-                } else {
-                    adminTopPanel.classList.add('hidden');
-                }
-            }
-            renderProducts();
-        }
-    </script>
-</body>
-</html>
+            const phone = (phoneInput
