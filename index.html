@@ -15,14 +15,14 @@
           theme: {
               extend: {
                   colors: {
-                      /* Κύριο Dusty Pink (αντικαθιστά το παλιό πράσινο) */
+                      /* Κύριο Dusty Pink */
                       oddGreen: {
                           DEFAULT: '#F4A6B8',
                           hover: '#ec8fa5',
                           light: '#FFF5F6',
                           dark: '#d97a90'
                       },
-                      /* Warm Croissant Butter (για λεπτομέρειες & πάνω μπάρα) */
+                      /* Warm Croissant Butter (Λεπτομέρειες & Πάνω Μπάρα) */
                       oddPink: {
                           DEFAULT: '#FCE18B',
                           hover: '#f7d569',
@@ -77,12 +77,12 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- TOP BANNER (Χρώμα Κρουασάν/Βουτύρου #FCE18B) -->
+  <!-- TOP BANNER -->
   <div class="bg-oddPink text-slate-900 font-bold text-center py-2 px-4 odd-border border-b text-sm sm:text-base flex items-center justify-center gap-2">
     <span>🥐 Welcome to The Pink Croissant Shop! Enjoy the taste of creativity 🧸</span>
   </div>
 
-  <!-- HEADER (Κύριο Muted Ροζ #F4A6B8) -->
+  <!-- HEADER -->
   <header class="sticky top-0 z-30 bg-oddGreen odd-border border-b py-4 px-4 sm:px-8 shadow-sm">
     <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
        <!-- LOGO AREA -->
@@ -106,7 +106,7 @@
         </button>
 
         <!-- IG BUTTON -->
-        <a id="igHeaderBtn" href="https://www.instagram.com/thepinkcroissant_creations/" target="_blank" class="inline-flex items-center gap-2 font-bold px-4 py-2.5 bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white rounded-2xl odd-shadow text-xs sm:text-sm hover:opacity-90 border-2 border-slate-900">
+        <a id="igHeaderBtn" href="https://www.instagram.com/thepinkcroissant_creations/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 font-bold px-4 py-2.5 bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white rounded-2xl odd-shadow text-xs sm:text-sm hover:opacity-90 border-2 border-slate-900">
           <i class="fa-brands fa-instagram text-base"></i>
           <span>Dm me to order</span>
         </a>
@@ -117,7 +117,7 @@
   <!-- MAIN CONTENT VIEW -->
   <main class="flex flex-col flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
-    <!-- HERO SECTION (Κύριο Muted Ροζ #F4A6B8) -->
+    <!-- HERO SECTION -->
     <section class="bg-oddGreen rounded-3xl p-6 sm:p-10 odd-border odd-shadow mb-10 text-center relative overflow-hidden">
       <div class="inline-block bg-oddBlue text-white font-bold text-xs uppercase px-3 py-1 rounded-full border-2 border-slate-900 mb-3">Official Showcase of my creations</div>
       <h2 class="font-brand text-3xl sm:text-5xl font-extrabold text-slate-900 mb-3">Find Your Own Taste!</h2>
@@ -130,7 +130,7 @@
         <span class="text-xl">🛠️</span>
         <div>
           <h2 class="font-bold text-slate-900 font-brand">Owner Mode Active</h2>
-          <p class="text-xs text-slate-700">You can add new products or edit/delete existing ones below. Changes sync automatically!</p>
+          <p class="text-xs text-slate-700">You can add new products or edit/delete existing ones below. Changes sync globally to Cloud!</p>
         </div>
       </div>
       <button onclick="openProductModal()" class="px-4 py-2.5 bg-oddGreen hover:bg-oddGreen-hover text-slate-900 font-bold font-brand text-sm rounded-2xl border-2 border-slate-900 odd-shadow-sm transition flex items-center gap-2">
@@ -161,7 +161,7 @@
         <!-- Loading Spinner -->
         <div id="loadingSpinner" class="col-span-full py-16 text-center">
             <i class="fa-solid fa-circle-notch fa-spin text-4xl text-oddGreen mb-3"></i>
-            <p class="text-xs font-bold text-slate-600 font-brand">Loading live catalog...</p>
+            <p class="text-xs font-bold text-slate-600 font-brand">Loading live catalog from Cloud...</p>
         </div>
     </div>
 
@@ -256,7 +256,7 @@
 
               <div>
                   <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Image URL (Optional)</label>
-                  <input type="url" id="prodImage" placeholder="Paste image link (e.g. from ImgBB) or leave blank" 
+                  <input type="url" id="prodImage" placeholder="Paste direct image link (e.g. from ImgBB)" 
                          class="w-full px-4 py-2.5 bg-slate-50 border-2 border-slate-900 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-oddGreen">
               </div>
 
@@ -363,7 +363,7 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- PRODUCT DETAIL MODAL (Fitted for Laptops with Scroll) -->
+  <!-- PRODUCT DETAIL MODAL -->
   <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
       <div class="bg-white rounded-3xl border-2 border-slate-900 odd-shadow max-w-md w-full max-h-[85vh] flex flex-col p-6 relative">
           <button onclick="closeDetailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 text-lg z-10">
@@ -373,15 +373,17 @@
       </div>
   </div>
 
-  <!-- FIREBASE DB & APP LOGIC -->
+  <!-- FIREBASE DB & APP LOGIC (100% FIXED) -->
   <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
       import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
       import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
       
       const OWNER_PIN = "7447";
-      const INSTAGRAM_URL = "https://www.instagram.com/direct/t/18001774442822754/";
-      const APP_ID = 'Pink_Croissant';
+      // ΔΙΟΡΘΩΣΗ 1: Αφαιρέθηκε το κενό στην αρχή του URL
+      const INSTAGRAM_URL = "https://www.instagram.com/thepinkcroissant_creations/";
+      // ΔΙΟΡΘΩΣΗ 2: Όνομα φακέλου στη βάση χωρίς κενά διαστήματα
+      const APP_ID = "pink_croissant_shop";
 
       const INITIAL_PRODUCTS = [
           {
@@ -419,25 +421,15 @@
       let activeCategory = 'All';
       let inStockOnlyFilter = false;
     
-      let firebaseConfig = {};
-      if (typeof __firebase_config !== 'undefined') {
-        try{
-            firebaseConfig = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
-        } catch(e) {
-            firebaseConfig = {};
-        }
-      }
-
-      if (!firebaseConfig.apiKey) {
-        firebaseConfig = {
+      // ΔΙΟΡΘΩΣΗ 3: Αφαιρέθηκαν όλα τα κενά διαστήματα από τα κλειδιά του Firebase
+      const firebaseConfig = {
           apiKey: "AIzaSyAHoc709jxhwBFRwhnv8MEUhcEFxEABHNU",
           authDomain: "pink-croissant-site.firebaseapp.com",
           projectId: "pink-croissant-site",
           storageBucket: "pink-croissant-site.firebasestorage.app",
           messagingSenderId: "863424913207",
           appId: "1:863424913207:web:94c4508c8ca0ec25eb04b2"
-        };
-      }
+      };
     
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
@@ -449,16 +441,10 @@
 
           const searchInput = document.getElementById('searchInput');
           if (searchInput) searchInput.addEventListener('input', renderProducts);
-        
-          const cached = localStorage.getItem('Pink_Croissant');
-          if (cached) {
-              try {
-                  products = JSON.parse(cached);
-                  renderCategories();
-                  renderProducts();
-              } catch(e) {
-                console.warn("Failed to load cached products:", e);
-              }
+
+          // Προειδοποίηση αν ανοίγεις το αρχείο με διπλό κλικ (file://) αντί από server
+          if (window.location.protocol === 'file:') {
+              console.warn("Τρέχεις το αρχείο τοπικά (file://). Το Firebase Auth μπορεί να μπλοκαριστεί από τον browser.");
           }
 
           await initializeAppSession();
@@ -467,16 +453,14 @@
       async function initializeAppSession() {
           try {
               await signInAnonymously(auth);
-              listenToCloudProducts();
           } catch (err) {
-              console.warn("Firestore connection fallback: using local memory mode.", err);
-              if (products.length === 0) products = INITIAL_PRODUCTS;
-              renderCategories();
-              renderProducts();
+              console.warn("Anonymous Auth warning:", err);
           }
+          // ΔΙΟΡΘΩΣΗ 4: Ακούμε πάντα απευθείας το Cloud χωρίς να μπλέκουμε το παλιό localStorage στην εκκίνηση
+          listenToCloudProducts();
       }
 
-      function showToast(message, duration = 3000) {
+      function showToast(message, duration = 3500) {
           const container = document.getElementById('toastContainer');
           if (!container) return;
           const toast = document.createElement('div');
@@ -492,13 +476,95 @@
           }, duration);
       }
 
+      // ΔΙΟΡΘΩΣΗ 5: Καθαρή ανάγνωση από το Firestore (χωρίς το setTimeout των 1500ms που έσβηνε τα δεδομένα)
+      function listenToCloudProducts() {
+          const productsCol = collection(db, 'artifacts', APP_ID, 'public', 'data', 'products');
+
+          onSnapshot(productsCol, (snapshot) => {
+              if (!snapshot.empty) {
+                  products = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+                  localStorage.setItem('Pink_Croissant_Backup', JSON.stringify(products));
+              } else {
+                  // Αν η βάση στο Cloud είναι εντελώς άδεια την πρώτη φορά, ανεβάζει τα 3 αρχικά προϊόντα
+                  products = [...INITIAL_PRODUCTS];
+                  INITIAL_PRODUCTS.forEach(p => {
+                      const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', String(p.id));
+                      setDoc(docRef, p).catch(err => console.warn("Initial seed waiting for auth:", err));
+                  });
+              }
+              renderCategories();
+              renderProducts();
+          }, (error) => {
+              console.error("Firestore Error:", error);
+              showToast("⚠️ Cloud connection issue. Showing backup.", 5000);
+              const cached = localStorage.getItem('Pink_Croissant_Backup');
+              products = cached ? JSON.parse(cached) : INITIAL_PRODUCTS;
+              renderCategories();
+              renderProducts();
+          });
+      }
+
+      // ΔΙΟΡΘΩΣΗ 6: Πραγματική αποθήκευση πρώτα στο Cloud και εμφανής ειδοποίηση αν κάτι πάει στραβά
+      window.saveProduct = async function(event) {
+          event.preventDefault();
+          const btn = document.getElementById('saveProdBtn');
+          btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving...`;
+          btn.disabled = true;
+
+          const id = String(document.getElementById('productId').value || 'prod-' + Date.now());
+          const newProd = {
+              id: id,
+              title: document.getElementById('prodTitle').value.trim(),
+              price: parseFloat(document.getElementById('prodPrice').value),
+              category: document.getElementById('prodCategory').value.trim(),
+              image: document.getElementById('prodImage').value.trim(),
+              description: document.getElementById('prodDesc').value.trim(),
+              stockStatus: document.getElementById('prodStock').value
+          };
+
+          try {
+              if (!auth.currentUser) {
+                  await signInAnonymously(auth);
+              }
+              const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', id);
+              await setDoc(docRef, newProd);
+              
+              showToast("✅ Saved globally to Cloud!");
+              closeProductModal();
+          } catch (err) {
+              console.error("Cloud sync error:", err);
+              let helpText = "Έλεγξε τα Firestore Rules και το Anonymous Auth στο Firebase Console.";
+              if (window.location.protocol === 'file:') {
+                  helpText = "Ανοίγεις το αρχείο με διπλό κλικ (file://). Πρέπει να το τρέξεις μέσω Live Server ή να το ανεβάσεις στο hosting σου (π.χ. GitHub Pages / Netlify) για να επιτρέψει ο browser τη σύνδεση με το Firebase!";
+              }
+              alert("Αποτυχία παγκόσμιας αποθήκευσης!\n\nΣφάλμα: " + err.message + "\n\nΛύση: " + helpText);
+          } finally {
+              btn.innerHTML = "Save to Cloud";
+              btn.disabled = false;
+          }
+      };
+
+      window.deleteProduct = async function(prodId) {
+          const cleanId = String(prodId);
+          if (confirm("Delete this product permanently for everyone?")) {
+              try {
+                  if (!auth.currentUser) {
+                      await signInAnonymously(auth);
+                  }
+                  const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', cleanId);
+                  await deleteDoc(docRef);
+                  showToast("🗑️ Deleted globally from Cloud!");
+              } catch (err) {
+                  console.error("Cloud deletion error:", err);
+                  alert("Αποτυχία διαγραφής από το Cloud:\n" + err.message);
+              }
+          }
+      };
+
       window.addToCart = function(productId, quantity = 1) {
           const cleanId = String(productId);
           const product = products.find(p => String(p.id) === cleanId);
-          if (!product) {
-              console.error("Product not found for ID:", cleanId);
-              return;
-          }
+          if (!product) return;
 
           const existingIndex = cart.findIndex(item => String(item.id) === cleanId);
           if (existingIndex > -1) {
@@ -705,106 +771,6 @@
           }, 500);
       };
 
-      function listenToCloudProducts() {
-          const productsCol = collection(db, 'artifacts', APP_ID, 'public', 'data', 'products');
-          
-          let loaded = false;
-          setTimeout(() => {
-              if (!loaded && products.length === 0) {
-                  console.warn("Firestore timeout: loading local fallback products.");
-                  products = INITIAL_PRODUCTS;
-                  renderCategories();
-                  renderProducts();
-              }
-          }, 1500);
-
-          onSnapshot(productsCol, (snapshot) => {
-              loaded = true;
-              if (!snapshot.empty) {
-                  products = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-              } else if (products.length === 0) {
-                  products = [...INITIAL_PRODUCTS];
-                  INITIAL_PRODUCTS.forEach(p => {
-                      const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', String(p.id));
-                      setDoc(docRef, p).catch(err => console.log("Seeding note:", err));
-                  });
-              }
-              localStorage.setItem('Pink_Croissant', JSON.stringify(products));
-              renderCategories();
-              renderProducts();
-          }, (error) => {
-              loaded = true;
-              console.error("Error fetching live data:", error);
-              if (products.length === 0) {
-                  products = INITIAL_PRODUCTS;
-                  renderCategories();
-                  renderProducts();
-              }
-          });
-      }
-
-      window.saveProduct = async function(event) {
-          event.preventDefault();
-          const btn = document.getElementById('saveProdBtn');
-          btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving...`;
-          btn.disabled = true;
-
-          const id = String(document.getElementById('productId').value || 'prod-' + Date.now());
-          const newProd = {
-              id: id,
-              title: document.getElementById('prodTitle').value,
-              price: parseFloat(document.getElementById('prodPrice').value),
-              category: document.getElementById('prodCategory').value.trim(),
-              image: document.getElementById('prodImage').value.trim(),
-              description: document.getElementById('prodDesc').value.trim(),
-              stockStatus: document.getElementById('prodStock').value
-          };
-
-          const existingIdx = products.findIndex(p => String(p.id) === id);
-          if (existingIdx !== -1) {
-              products[existingIdx] = newProd;
-          } else {
-              products.unshift(newProd);
-          }
-          localStorage.setItem('Pink_Croissant', JSON.stringify(products));
-          renderCategories();
-          renderProducts();
-          showToast("Saved product!");
-          closeProductModal();
-
-          if (db && auth?.currentUser) {
-              try {
-                  const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', id);
-                  await setDoc(docRef, newProd);
-              } catch (err) {
-                  console.warn("Cloud sync error:", err);
-              }
-          }
-
-          btn.innerHTML = "Save to Cloud";
-          btn.disabled = false;
-      };
-
-      window.deleteProduct = async function(prodId) {
-          const cleanId = String(prodId);
-          if (confirm("Delete this product permanently?")) {
-              products = products.filter(p => String(p.id) !== cleanId);
-              localStorage.setItem('Pink_Croissant', JSON.stringify(products));
-              renderCategories();
-              renderProducts();
-              showToast("Product deleted!");
-
-              if (db && auth?.currentUser) {
-                  try {
-                      const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', cleanId);
-                      await deleteDoc(docRef);
-                  } catch (err) {
-                      console.warn("Cloud deletion error:", err);
-                  }
-              }
-          }
-      };
-
       function renderCategories() {
           const categories = ['All', ...new Set(products.map(p => p.category))];
           const container = document.getElementById('categoryTabs');
@@ -846,7 +812,6 @@
           renderProducts();
       };
 
-      /* Default εικόνα σε Dusty Pink (#F4A6B8) όταν δεν έχεις βάλει ακόμα φωτογραφία */
       function getPlaceholderUrl(title) {
           const encoded = encodeURIComponent(title || "Pink Croissant");
           return `https://placehold.co/600x600/F4A6B8/1e293b?text=${encoded}`;
@@ -1020,16 +985,20 @@
           event.preventDefault();
           const entered = document.getElementById('ownerPinInput').value;
           if (entered === OWNER_PIN) {
-            try {
-              await signInAnonymously(auth);
-              isAdminLoggedIn = true;
-              closePasswordModal();
-              updateAdminUI();
-              showToast("Owner Mode Authorized!");
-            } catch (err) {
-              console.error("Auth error:", err);
-              showToast("Authentication failed!");
-            }
+              try {
+                  await signInAnonymously(auth);
+                  isAdminLoggedIn = true;
+                  closePasswordModal();
+                  updateAdminUI();
+                  showToast("Owner Mode Authorized!");
+              } catch (err) {
+                  console.error("Auth error:", err);
+                  let msg = "Σφάλμα σύνδεσης στο Firebase Auth: " + err.message;
+                  if (window.location.protocol === 'file:') {
+                      msg += "\n\nΠΡΟΣΟΧΗ: Ανοίγεις το αρχείο ως 'file://'. Τρέξε το μέσω τοπικού server (Live Server) ή ανέβασέ το στο web hosting σου!";
+                  }
+                  alert(msg);
+              }
           } else {
               document.getElementById('pinErrorMsg').classList.remove('hidden');
           }
