@@ -570,25 +570,25 @@
             }
         }
 
-        // ================= PRODUCT LIST =================
+        // ================= PRODUCT LIST (FIXED) =================
         let products = [
             {
                 id: 1,
-                name: 'Comming soon',
+                name: 'Coming soon',
                 mainCategory: 'knitted',
                 subCategory: 'bears',
                 size: 'small',
                 sizeLabel: 'Small (~12cm)',
-                price: 1.00,
-                stock: 0,
+                price: 15.00,
+                stock: 5,
                 availabilityStatus: 'in_stock',
                 desc: 'A Showcase Store that includes all my crochet creations that are available for sale',
                 image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3HEtwgstTqsxZ7-iVONRir_jLWpuqT8iFR09z4uh50w&s=10',
-                
-                
-                badge: 'small'
-            },
-            
+                images: [
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3HEtwgstTqsxZ7-iVONRir_jLWpuqT8iFR09z4uh50w&s=10'
+                ],
+                badge: 'New'
+            }
         ];
 
         // Categories (Words only, no icons)
@@ -1308,7 +1308,7 @@
                 const prod = products.find(p => p.id === item.id);
                 const prodName = prod ? prod.name : 'Item';
                 const itemTotal = (Number(item.price) * item.quantity).toFixed(2);
-                lines.push((index + 1) + '. ' + prodName + '\\n   └ Qty: ' + item.quantity + ' x €' + Number(item.price).toFixed(2) + ' = €' + itemTotal);
+                lines.push((index + 1) + '. ' + prodName + '\n   └ Qty: ' + item.quantity + ' x €' + Number(item.price).toFixed(2) + ' = €' + itemTotal);
             });
 
             lines.push('------------------------------------');
@@ -1322,7 +1322,7 @@
             lines.push('');
             lines.push('Hello! I would love to order the items above. Please let me know regarding availability and payment methods. Thank you so much! 🌸✨');
 
-            return lines.join('\\n');
+            return lines.join('\n');
         }
 
         window.copyOrderMessage = function(quiet = false) {
