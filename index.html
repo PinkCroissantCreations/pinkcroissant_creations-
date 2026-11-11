@@ -46,7 +46,6 @@
         .gradient-soft-pink {
             background: linear-gradient(180deg, #fff5f8 0%, #fff9fb 100%);
         }
-        /* Custom scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #fff1f5; }
         ::-webkit-scrollbar-thumb { background: #fbb3ce; border-radius: 999px; }
@@ -66,7 +65,7 @@
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-pink-100 transition-all shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
             
-            <!-- Brand Logo (Top Left) -->
+            <!-- Brand Logo -->
             <div class="flex items-center gap-3.5 cursor-pointer group" onclick="window.scrollTo({top:0, behavior:'smooth'})">
                 <div class="relative w-14 h-14 rounded-2xl p-1 bg-white border border-pink-200 shadow-sm shadow-pink-100 group-hover:scale-105 transition-transform flex items-center justify-center overflow-hidden">
                     <img src="https://i.postimg.cc/BZKt14Zp/pinkcroissant-LOGO.jpg" alt="Pink Croissant Logo" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/120x120/feeef4/e84880?text=Pink+Croissant'">
@@ -119,7 +118,7 @@
     <!-- Main Content -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
-        <!-- Hero Banner: Find your own taste -->
+        <!-- Hero Banner -->
         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-100 via-[#feeef4] to-pink-50 border border-pink-200 p-8 sm:p-10 shadow-sm text-center flex flex-col items-center justify-center">
             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-pink-200 text-pink-600 text-xs font-extrabold mb-3">
                 <span>Handmade with Love</span>
@@ -132,7 +131,7 @@
             </p>
         </div>
 
-        <!-- OWNER MODE PANEL (Visible only when Owner Mode is Active) -->
+        <!-- OWNER MODE PANEL -->
         <div id="adminTopPanel" class="hidden bg-amber-50 border-2 border-amber-300 rounded-3xl p-5 flex flex-wrap items-center justify-between gap-4 shadow-sm">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-amber-200 text-amber-800 flex items-center justify-center text-xl shrink-0">
@@ -140,14 +139,19 @@
                 </div>
                 <div>
                     <h3 class="font-black text-slate-900 text-base">Owner Mode Active</h3>
-                    <p class="text-xs text-slate-600 font-medium">You can add new products or edit/delete any existing item directly on the page.</p>
+                    <p class="text-xs text-slate-600 font-medium">You can add products, manage categories, or edit/delete any item directly on the page.</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center flex-wrap gap-2.5">
                 <button onclick="window.openProductAdminModal()" 
                         class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs rounded-2xl shadow-sm flex items-center gap-1.5 transition active:scale-95">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
                     <span>Add New Product</span>
+                </button>
+                <button onclick="window.openCategoriesAdminModal()" 
+                        class="px-4 py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white font-extrabold text-xs rounded-2xl shadow-sm flex items-center gap-1.5 transition active:scale-95">
+                    <i data-lucide="tags" class="w-4 h-4"></i>
+                    <span>Manage Categories</span>
                 </button>
                 <button onclick="window.openPasswordModal()" 
                         class="px-4 py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-xs rounded-2xl shadow-sm transition active:scale-95">
@@ -159,8 +163,6 @@
         <!-- Filter & Categories Area -->
         <div class="space-y-3">
             <div class="flex flex-wrap items-center gap-2" id="mainCategoriesBar"></div>
-            <div id="subCategoriesBar" class="hidden flex-wrap items-center gap-2 pl-2 pt-1 border-l-2 border-pink-300"></div>
-            <div id="sizeSubCategoriesBar" class="hidden flex-wrap items-center gap-2 pl-4 pt-1 border-l-2 border-pink-200"></div>
 
             <div class="flex items-center justify-between text-xs font-bold text-slate-500 pt-2 px-1">
                 <span><span id="foundLabel">Found:</span> <strong id="productsCount" class="text-pink-600">0</strong> <span id="prodCountLabel">products</span></span>
@@ -179,7 +181,7 @@
                 <i data-lucide="heart-crack" class="w-7 h-7"></i>
             </div>
             <h3 class="text-base font-extrabold text-slate-800 mb-1" id="noResultsTitle">No products found in this category</h3>
-            <p class="text-xs text-slate-500 mb-4 font-medium" id="noResultsSub">Try a different filter or clear your search query.</p>
+            <p class="text-xs text-slate-500 mb-4 font-medium" id="noResultsSub">Try a different category filter or clear your search query.</p>
             <button onclick="window.resetAllFilters()" id="noResultsBtn" class="text-xs font-extrabold text-white gradient-pink px-4 py-2 rounded-full shadow-md shadow-pink-200">
                 View All
             </button>
@@ -234,6 +236,44 @@
         </div>
     </div>
 
+    <!-- OWNER: MANAGE CATEGORIES MODAL -->
+    <div id="categoriesAdminModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-pink-200 relative flex flex-col">
+            <button onclick="window.closeCategoriesAdminModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-pink-50 rounded-full transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-2.5 mb-5 pb-3 border-b border-pink-100">
+                <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black">
+                    <i data-lucide="tags" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-slate-900">Manage Categories</h3>
+                    <p class="text-xs text-slate-500 font-medium">Add, rename or delete store categories.</p>
+                </div>
+            </div>
+
+            <!-- Add new category form -->
+            <form onsubmit="window.addNewCategory(event)" class="flex gap-2 mb-4">
+                <input type="text" id="newCategoryName" required placeholder="e.g. Handmade Bags" 
+                       class="flex-1 bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-1 transition">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Add</span>
+                </button>
+            </form>
+
+            <div class="text-xs font-black text-slate-400 uppercase tracking-wider mb-2">Existing Categories</div>
+            <div id="adminCategoriesList" class="space-y-2 flex-1 overflow-y-auto pr-1"></div>
+
+            <div class="pt-4 mt-4 border-t border-pink-100 text-right">
+                <button type="button" onclick="window.closeCategoriesAdminModal()" class="px-5 py-2.5 rounded-xl border border-pink-200 text-xs font-bold text-slate-600 hover:bg-pink-50 transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- OWNER: ADD / EDIT PRODUCT MODAL -->
     <div id="productAdminModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] overflow-y-auto p-6 sm:p-7 shadow-2xl border border-pink-200 relative">
@@ -275,36 +315,12 @@
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-black text-slate-700 mb-1">Main Category *</label>
-                        <select id="adminProdMainCat" required class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
-                            <option value="knitted">Knitted Items</option>
-                            <option value="paintings">Art & Prints</option>
-                            <option value="extras">Extras</option>
-                        </select>
+                        <label class="block font-black text-slate-700 mb-1">Category *</label>
+                        <select id="adminProdMainCat" required class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300"></select>
                     </div>
                     <div>
-                        <label class="block font-black text-slate-700 mb-1">Subcategory</label>
-                        <select id="adminProdSubCat" class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
-                            <option value="">None</option>
-                            <option value="bears">Teddy Bears</option>
-                            <option value="keychains">Keychains</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-black text-slate-700 mb-1">Size (Bears)</label>
-                        <select id="adminProdSize" class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
-                            <option value="">None</option>
-                            <option value="small">Small</option>
-                            <option value="medium">Medium</option>
-                            <option value="large">Large</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-black text-slate-700 mb-1">Size Label</label>
-                        <input type="text" id="adminProdSizeLabel" placeholder="e.g. Small (~12cm)"
+                        <label class="block font-black text-slate-700 mb-1">Size / Dimensions (Optional)</label>
+                        <input type="text" id="adminProdSizeLabel" placeholder="e.g. Small (~12cm) or 20x30cm"
                                class="w-full bg-pink-50/40 border border-pink-200 rounded-xl px-3.5 py-2.5 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300">
                     </div>
                 </div>
@@ -361,7 +377,6 @@
             </button>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                
                 <!-- Left: Image Gallery & Thumbnails -->
                 <div class="space-y-3">
                     <div class="relative w-full h-64 sm:h-72 bg-pink-50 rounded-2xl overflow-hidden border border-pink-100 flex items-center justify-center">
@@ -532,24 +547,25 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Path συλλογής βάσει της δομής του Firestore σου
+        // Firestore Paths
         const productsCollectionRef = collection(db, "artifacts", "Pink_Croissant", "public", "data", "products");
+        const categoriesCollectionRef = collection(db, "artifacts", "Pink_Croissant", "public", "data", "categories");
 
         const OWNER_PIN = "7447";
         let isAdminLoggedIn = false;
         const instagramHandle = 'thepinkcroissant_creations';
 
         let currentMainCategory = 'all';
-        let currentSubCategory = 'all';
-        let currentBearSize = 'all';
         let searchQuery = '';
         let cart = [];
 
         let activeProduct = null;
         let activeProductQty = 1;
 
-        // Ο πίνακας προϊόντων πλέον γεμίζει δυναμικά από το Firebase
         let products = [];
+        let mainCategories = [
+            { id: 'all', name: 'All' }
+        ];
 
         // AVAILABILITY BADGES HELPER
         function getAvailabilityBadgeData(product) {
@@ -583,37 +599,47 @@
             }
         }
 
-        const mainCategories = [
-            { id: 'all', name: 'All' },
-            { id: 'knitted', name: 'Knitted Items' },
-            { id: 'paintings', name: 'Art & Prints' },
-            { id: 'extras', name: 'Extras' }
-        ];
-
-        const subCategories = [
-            { id: 'all', name: 'All Knitted' },
-            { id: 'keychains', name: 'Keychains' },
-            { id: 'bears', name: 'Teddy Bears' }
-        ];
-
-        const bearSizes = [
-            { id: 'all', name: 'All Sizes' },
-            { id: 'small', name: 'Small' },
-            { id: 'medium', name: 'Medium' },
-            { id: 'large', name: 'Large' }
-        ];
-
         function initApp() {
             updateIgHandleDisplays();
-            renderCategoryFilters();
             renderCart();
+            setupFirebaseCategoriesListener();
             setupFirebaseProductsListener();
-            if (window.lucide) {
-                lucide.createIcons();
-            }
+            if (window.lucide) lucide.createIcons();
         }
 
-        // ================= REAL-TIME FIRESTORE LISTENER =================
+        // ================= REAL-TIME FIRESTORE LISTENERS =================
+        function setupFirebaseCategoriesListener() {
+            onSnapshot(categoriesCollectionRef, async (snapshot) => {
+                const loadedCats = [];
+                snapshot.forEach(docSnap => {
+                    loadedCats.push({ ...docSnap.data(), id: docSnap.id });
+                });
+
+                // Default categories setup if empty
+                if (loadedCats.length === 0) {
+                    const defaults = [
+                        { id: 'knitted', name: 'Knitted Items', order: 1 },
+                        { id: 'paintings', name: 'Art & Prints', order: 2 },
+                        { id: 'extras', name: 'Extras', order: 3 }
+                    ];
+                    for (const def of defaults) {
+                        await setDoc(doc(categoriesCollectionRef, def.id), def);
+                    }
+                    return;
+                }
+
+                loadedCats.sort((a, b) => (a.order || 99) - (b.order || 99));
+                mainCategories = [{ id: 'all', name: 'All' }, ...loadedCats];
+
+                renderCategoryFilters();
+                updateAdminCategoryDropdown();
+                renderAdminCategoriesList();
+                renderProducts();
+            }, (error) => {
+                console.error("Firestore categories listen error:", error);
+            });
+        }
+
         function setupFirebaseProductsListener() {
             onSnapshot(productsCollectionRef, (snapshot) => {
                 const loadedProducts = [];
@@ -627,7 +653,7 @@
                 products = loadedProducts;
                 renderProducts();
             }, (error) => {
-                console.error("Firestore listen error:", error);
+                console.error("Firestore products listen error:", error);
                 showToast("Error loading products from cloud");
             });
         }
@@ -645,29 +671,12 @@
 
         window.setMainCategory = function(catId) {
             currentMainCategory = catId;
-            currentSubCategory = 'all';
-            currentBearSize = 'all';
-            renderCategoryFilters();
-            renderProducts();
-        };
-
-        window.setSubCategory = function(subId) {
-            currentSubCategory = subId;
-            currentBearSize = 'all';
-            renderCategoryFilters();
-            renderProducts();
-        };
-
-        window.setBearSize = function(sizeId) {
-            currentBearSize = sizeId;
             renderCategoryFilters();
             renderProducts();
         };
 
         window.resetAllFilters = function() {
             currentMainCategory = 'all';
-            currentSubCategory = 'all';
-            currentBearSize = 'all';
             searchQuery = '';
             const dInput = document.getElementById('searchInputDesktop');
             const mInput = document.getElementById('searchInputMobile');
@@ -697,66 +706,105 @@
                     : 'bg-white text-slate-700 hover:bg-pink-50 border border-pink-200/80';
                 return `<button onclick="window.setMainCategory('${cat.id}')" class="px-4 py-2 rounded-full text-xs sm:text-sm font-extrabold transition-all ${activeClass}"><span>${cat.name}</span></button>`;
             }).join('');
+        }
 
-            const subBar = document.getElementById('subCategoriesBar');
-            if (subBar) {
-                if (currentMainCategory === 'knitted') {
-                    subBar.classList.remove('hidden');
-                    subBar.classList.add('flex');
-                    subBar.innerHTML = `
-                        <span class="text-xs font-black text-pink-600 mr-1 flex items-center gap-1">
-                            <i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i> Subcategory:
-                        </span>
-                        ${subCategories.map(sub => {
-                            const isActive = currentSubCategory === sub.id;
-                            const activeClass = isActive
-                                ? 'bg-pink-600 text-white shadow-xs'
-                                : 'bg-white/90 text-slate-600 hover:bg-pink-100/60 border border-pink-200';
-                            return `
-                                <button onclick="window.setSubCategory('${sub.id}')" 
-                                        class="px-3 py-1.5 rounded-full text-xs font-bold transition-all ${activeClass}">
-                                    ${sub.name}
-                                </button>
-                            `;
-                        }).join('')}
-                    `;
-                } else {
-                    subBar.classList.add('hidden');
-                    subBar.classList.remove('flex');
-                }
+        function updateAdminCategoryDropdown() {
+            const select = document.getElementById('adminProdMainCat');
+            if (!select) return;
+            const validCats = mainCategories.filter(c => c.id !== 'all');
+            select.innerHTML = validCats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        }
+
+        // ================= CATEGORIES MANAGEMENT (OWNER) =================
+        window.openCategoriesAdminModal = function() {
+            const modal = document.getElementById('categoriesAdminModal');
+            if (modal) {
+                renderAdminCategoriesList();
+                modal.classList.remove('hidden');
+                if (window.lucide) lucide.createIcons();
+            }
+        };
+
+        window.closeCategoriesAdminModal = function() {
+            const modal = document.getElementById('categoriesAdminModal');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.addNewCategory = async function(e) {
+            e.preventDefault();
+            const input = document.getElementById('newCategoryName');
+            const name = input.value.trim();
+            if (!name) return;
+
+            const id = name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
+            try {
+                await setDoc(doc(categoriesCollectionRef, id), {
+                    name: name,
+                    order: Date.now()
+                });
+                input.value = '';
+                showToast(`Category "${name}" added! ✨`);
+            } catch (err) {
+                console.error("Error adding category:", err);
+                showToast("Failed to add category: " + err.message);
+            }
+        };
+
+        window.renameCategory = async function(catId, oldName) {
+            const newName = prompt(`Rename category "${oldName}" to:`, oldName);
+            if (!newName || newName.trim() === '' || newName.trim() === oldName) return;
+
+            try {
+                await setDoc(doc(categoriesCollectionRef, catId), { name: newName.trim() }, { merge: true });
+                showToast(`Category renamed to "${newName.trim()}"! ✨`);
+            } catch (err) {
+                console.error("Error renaming category:", err);
+                showToast("Failed to rename category: " + err.message);
+            }
+        };
+
+        window.deleteCategory = async function(catId, catName) {
+            const confirmed = confirm(`Are you sure you want to delete "${catName}"?`);
+            if (!confirmed) return;
+
+            try {
+                await deleteDoc(doc(categoriesCollectionRef, catId));
+                if (currentMainCategory === catId) currentMainCategory = 'all';
+                showToast(`Category "${catName}" deleted.`);
+            } catch (err) {
+                console.error("Error deleting category:", err);
+                showToast("Failed to delete category: " + err.message);
+            }
+        };
+
+        function renderAdminCategoriesList() {
+            const list = document.getElementById('adminCategoriesList');
+            if (!list) return;
+
+            const editableCats = mainCategories.filter(c => c.id !== 'all');
+            if (editableCats.length === 0) {
+                list.innerHTML = `<div class="text-xs text-slate-400 py-3 text-center">No categories created yet.</div>`;
+                return;
             }
 
-            const sizeBar = document.getElementById('sizeSubCategoriesBar');
-            if (sizeBar) {
-                if (currentMainCategory === 'knitted' && currentSubCategory === 'bears') {
-                    sizeBar.classList.remove('hidden');
-                    sizeBar.classList.add('flex');
-                    sizeBar.innerHTML = `
-                        <span class="text-xs font-black text-pink-500 mr-1 flex items-center gap-1">
-                            <i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i> Size:
-                        </span>
-                        ${bearSizes.map(sz => {
-                            const isActive = currentBearSize === sz.id;
-                            const activeClass = isActive
-                                ? 'bg-rose-500 text-white shadow-xs'
-                                : 'bg-white text-slate-600 hover:bg-pink-50 border border-pink-200';
-                            return `
-                                <button onclick="window.setBearSize('${sz.id}')" 
-                                        class="px-3 py-1 rounded-full text-xs font-bold transition-all ${activeClass}">
-                                    ${sz.name}
-                                </button>
-                            `;
-                        }).join('')}
-                    `;
-                } else {
-                    sizeBar.classList.add('hidden');
-                    sizeBar.classList.remove('flex');
-                }
-            }
+            list.innerHTML = editableCats.map(cat => `
+                <div class="flex items-center justify-between p-2.5 bg-pink-50/50 rounded-xl border border-pink-100">
+                    <span class="font-bold text-slate-800 text-xs">${cat.name}</span>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="window.renameCategory('${cat.id}', '${cat.name.replace(/'/g, "\\'")}')" title="Rename" class="w-7 h-7 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-900 flex items-center justify-center transition">
+                            <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button onclick="window.deleteCategory('${cat.id}', '${cat.name.replace(/'/g, "\\'")}')" title="Delete" class="w-7 h-7 rounded-lg bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center transition">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
 
             if (window.lucide) lucide.createIcons();
         }
 
+        // ================= PRODUCT RENDERING =================
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
             const noResults = document.getElementById('noResultsState');
@@ -764,8 +812,6 @@
 
             const filtered = products.filter(p => {
                 if (currentMainCategory !== 'all' && p.mainCategory !== currentMainCategory) return false;
-                if (currentMainCategory === 'knitted' && currentSubCategory !== 'all' && p.subCategory !== currentSubCategory) return false;
-                if (currentMainCategory === 'knitted' && currentSubCategory === 'bears' && currentBearSize !== 'all' && p.size !== currentBearSize) return false;
 
                 if (searchQuery) {
                     const matchName = (p.name || '').toLowerCase().includes(searchQuery);
@@ -871,6 +917,7 @@
             if (window.lucide) lucide.createIcons();
         }
 
+        // ================= PRODUCT DETAILS MODAL =================
         window.openProductModal = function(productId) {
             const product = products.find(p => String(p.id) === String(productId));
             if (!product) return;
@@ -1025,11 +1072,12 @@
             if (e.key === 'Escape') {
                 closeProductModal();
                 window.closeProductAdminModal();
+                window.closeCategoriesAdminModal();
                 toggleCartDrawer(false);
             }
         });
 
-        // ================= OWNER CRUD FUNCTIONS (FIRESTORE INTEGRATION) =================
+        // ================= OWNER PRODUCT CRUD =================
         window.openProductAdminModal = function(prodId = null) {
             const modal = document.getElementById('productAdminModal');
             const form = document.getElementById('adminProductForm');
@@ -1037,6 +1085,7 @@
             if (!modal || !form) return;
 
             form.reset();
+            updateAdminCategoryDropdown();
 
             if (prodId) {
                 const prod = products.find(p => String(p.id) === String(prodId));
@@ -1046,9 +1095,7 @@
                     document.getElementById('adminProdName').value = prod.name;
                     document.getElementById('adminProdPrice').value = prod.price;
                     document.getElementById('adminProdStock').value = prod.stock !== undefined ? prod.stock : 5;
-                    document.getElementById('adminProdMainCat').value = prod.mainCategory || 'knitted';
-                    document.getElementById('adminProdSubCat').value = prod.subCategory || '';
-                    document.getElementById('adminProdSize').value = prod.size || '';
+                    document.getElementById('adminProdMainCat').value = prod.mainCategory || (mainCategories[1] ? mainCategories[1].id : '');
                     document.getElementById('adminProdSizeLabel').value = prod.sizeLabel || '';
                     document.getElementById('adminProdStatus').value = prod.availabilityStatus || 'in_stock';
                     document.getElementById('adminProdBadge').value = prod.badge || '';
@@ -1082,8 +1129,6 @@
             const price = parseFloat(document.getElementById('adminProdPrice').value) || 0;
             const stock = parseInt(document.getElementById('adminProdStock').value) || 0;
             const mainCategory = document.getElementById('adminProdMainCat').value;
-            const subCategory = document.getElementById('adminProdSubCat').value || null;
-            const size = document.getElementById('adminProdSize').value || null;
             const sizeLabel = document.getElementById('adminProdSizeLabel').value.trim() || null;
             const availabilityStatus = document.getElementById('adminProdStatus').value;
             const badge = document.getElementById('adminProdBadge').value.trim() || null;
@@ -1099,8 +1144,6 @@
                 price,
                 stock,
                 mainCategory,
-                subCategory,
-                size,
                 sizeLabel,
                 availabilityStatus,
                 badge,
@@ -1208,7 +1251,7 @@
                             <i data-lucide="shopping-bag" class="w-8 h-8"></i>
                         </div>
                         <p class="font-extrabold text-slate-700 text-sm mb-1">Your cart is empty</p>
-                        <p class="text-xs text-slate-400 max-w-xs mb-4">Choose some knitted goods, bears or art to get started!</p>
+                        <p class="text-xs text-slate-400 max-w-xs mb-4">Choose some creations to get started!</p>
                         <button onclick="window.toggleCartDrawer(false)" class="text-xs font-black text-pink-600 hover:text-pink-700 underline">
                             Back to products
                         </button>
