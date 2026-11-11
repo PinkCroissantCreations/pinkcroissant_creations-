@@ -510,7 +510,14 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { 
+            getFirestore, 
+            collection, 
+            doc, 
+            setDoc, 
+            deleteDoc, 
+            onSnapshot 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyAHoc709jxhwBFRwhnv8MEUhcEFxEABHNU",
@@ -525,6 +532,9 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Path συλλογής βάσει της δομής του Firestore σου
+        const productsCollectionRef = collection(db, "artifacts", "Pink_Croissant", "public", "data", "products");
+
         const OWNER_PIN = "7447";
         let isAdminLoggedIn = false;
         const instagramHandle = 'thepinkcroissant_creations';
@@ -537,6 +547,9 @@
 
         let activeProduct = null;
         let activeProductQty = 1;
+
+        // Ο πίνακας προϊόντων πλέον γεμίζει δυναμικά από το Firebase
+        let products = [];
 
         // AVAILABILITY BADGES HELPER
         function getAvailabilityBadgeData(product) {
@@ -570,28 +583,6 @@
             }
         }
 
-        // ================= PRODUCT LIST (FIXED) =================
-        let products = [
-            {
-                id: 1,
-                name: 'Coming soon',
-                mainCategory: 'knitted',
-                subCategory: 'bears',
-                size: 'small',
-                sizeLabel: 'Small (~12cm)',
-                price: 15.00,
-                stock: 5,
-                availabilityStatus: 'in_stock',
-                desc: 'A Showcase Store that includes all my crochet creations that are available for sale',
-                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3HEtwgstTqsxZ7-iVONRir_jLWpuqT8iFR09z4uh50w&s=10',
-                images: [
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3HEtwgstTqsxZ7-iVONRir_jLWpuqT8iFR09z4uh50w&s=10'
-                ],
-                badge: 'New'
-            }
-        ];
-
-        // Categories (Words only, no icons)
         const mainCategories = [
             { id: 'all', name: 'All' },
             { id: 'knitted', name: 'Knitted Items' },
@@ -615,11 +606,30 @@
         function initApp() {
             updateIgHandleDisplays();
             renderCategoryFilters();
-            renderProducts();
             renderCart();
+            setupFirebaseProductsListener();
             if (window.lucide) {
                 lucide.createIcons();
             }
+        }
+
+        // ================= REAL-TIME FIRESTORE LISTENER =================
+        function setupFirebaseProductsListener() {
+            onSnapshot(productsCollectionRef, (snapshot) => {
+                const loadedProducts = [];
+                snapshot.forEach((docSnap) => {
+                    loadedProducts.push({
+                        ...docSnap.data(),
+                        id: docSnap.id
+                    });
+                });
+
+                products = loadedProducts;
+                renderProducts();
+            }, (error) => {
+                console.error("Firestore listen error:", error);
+                showToast("Error loading products from cloud");
+            });
         }
 
         if (document.readyState === 'loading') {
@@ -758,8 +768,8 @@
                 if (currentMainCategory === 'knitted' && currentSubCategory === 'bears' && currentBearSize !== 'all' && p.size !== currentBearSize) return false;
 
                 if (searchQuery) {
-                    const matchName = p.name.toLowerCase().includes(searchQuery);
-                    const matchDesc = p.desc.toLowerCase().includes(searchQuery);
+                    const matchName = (p.name || '').toLowerCase().includes(searchQuery);
+                    const matchDesc = (p.desc || '').toLowerCase().includes(searchQuery);
                     if (!matchName && !matchDesc) return false;
                 }
 
@@ -780,15 +790,14 @@
                 const avail = getAvailabilityBadgeData(prod);
 
                 return `
-                <div class="group bg-white rounded-3xl border border-pink-100 overflow-hidden shadow-xs hover:shadow-xl hover:border-pink-300 transition-all duration-300 flex flex-col justify-between cursor-pointer relative" onclick="window.openProductModal(${prod.id})">
+                <div class="group bg-white rounded-3xl border border-pink-100 overflow-hidden shadow-xs hover:shadow-xl hover:border-pink-300 transition-all duration-300 flex flex-col justify-between cursor-pointer relative" onclick="window.openProductModal('${prod.id}')">
                     
                     ${isAdminLoggedIn ? `
-                        <!-- OWNER ACTIONS (Edit / Delete) -->
                         <div class="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-2xl shadow-md" onclick="event.stopPropagation()">
-                            <button onclick="window.openProductAdminModal(${prod.id})" title="Edit Product" class="w-7 h-7 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-900 flex items-center justify-center transition active:scale-95">
+                            <button onclick="window.openProductAdminModal('${prod.id}')" title="Edit Product" class="w-7 h-7 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-900 flex items-center justify-center transition active:scale-95">
                                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
                             </button>
-                            <button onclick="window.deleteProductAdmin(${prod.id})" title="Delete Product" class="w-7 h-7 rounded-xl bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center transition active:scale-95">
+                            <button onclick="window.deleteProductAdmin('${prod.id}')" title="Delete Product" class="w-7 h-7 rounded-xl bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center transition active:scale-95">
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
@@ -830,7 +839,7 @@
                                 ${prod.name}
                             </h3>
                             <p class="text-xs text-slate-500 font-medium leading-relaxed mb-4 line-clamp-2">
-                                ${prod.desc}
+                                ${prod.desc || ''}
                             </p>
                         </div>
                     </div>
@@ -847,7 +856,7 @@
                                     Sold Out
                                 </span>
                             ` : `
-                                <button onclick="window.addToCart(${prod.id}, 1)" 
+                                <button onclick="window.addToCart('${prod.id}', 1)" 
                                         class="gradient-pink hover:brightness-105 text-white text-xs font-black px-4 py-2.5 rounded-2xl flex items-center gap-1.5 shadow-md shadow-pink-200 active:scale-95 transition-all">
                                     <i data-lucide="plus" class="w-4 h-4"></i>
                                     <span>Add</span>
@@ -863,7 +872,7 @@
         }
 
         window.openProductModal = function(productId) {
-            const product = products.find(p => p.id === productId);
+            const product = products.find(p => String(p.id) === String(productId));
             if (!product) return;
 
             activeProduct = product;
@@ -888,7 +897,7 @@
             if (mainImg) mainImg.src = product.image;
             if (title) title.innerText = product.name;
             if (price) price.innerText = '€' + Number(product.price).toFixed(2);
-            if (desc) desc.innerText = product.desc;
+            if (desc) desc.innerText = product.desc || '';
 
             const catObj = mainCategories.find(c => c.id === product.mainCategory);
             if (catBadge) catBadge.innerText = catObj ? catObj.name : 'Handmade';
@@ -1020,7 +1029,7 @@
             }
         });
 
-        // ================= OWNER CRUD FUNCTIONS =================
+        // ================= OWNER CRUD FUNCTIONS (FIRESTORE INTEGRATION) =================
         window.openProductAdminModal = function(prodId = null) {
             const modal = document.getElementById('productAdminModal');
             const form = document.getElementById('adminProductForm');
@@ -1030,7 +1039,7 @@
             form.reset();
 
             if (prodId) {
-                const prod = products.find(p => p.id === Number(prodId));
+                const prod = products.find(p => String(p.id) === String(prodId));
                 if (prod) {
                     heading.innerText = 'Edit Product';
                     document.getElementById('adminProdId').value = prod.id;
@@ -1065,7 +1074,7 @@
             if (modal) modal.classList.add('hidden');
         };
 
-        window.saveProductAdmin = function(event) {
+        window.saveProductAdmin = async function(event) {
             event.preventDefault();
 
             const prodId = document.getElementById('adminProdId').value;
@@ -1082,76 +1091,63 @@
             const rawImages = document.getElementById('adminProdImages').value.split('\n').map(u => u.trim()).filter(Boolean);
             const image = rawImages[0] || 'https://placehold.co/600x400/feeef4/e84880?text=Pink+Croissant';
             const images = rawImages.length > 0 ? rawImages : [image];
-            
             const desc = document.getElementById('adminProdDesc').value.trim();
 
-            if (prodId) {
-                // Edit existing product
-                const index = products.findIndex(p => p.id === Number(prodId));
-                if (index !== -1) {
-                    products[index] = {
-                        ...products[index],
-                        name,
-                        price,
-                        stock,
-                        mainCategory,
-                        subCategory,
-                        size,
-                        sizeLabel,
-                        availabilityStatus,
-                        badge,
-                        image,
-                        desc,
-                        images
-                    };
-                    showToast('Product updated successfully! ✨');
-                }
-            } else {
-                // Add new product
-                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-                const newProduct = {
-                    id: newId,
-                    name,
-                    price,
-                    stock,
-                    mainCategory,
-                    subCategory,
-                    size,
-                    sizeLabel,
-                    availabilityStatus,
-                    badge,
-                    image,
-                    images,
-                    desc
-                };
-                products.unshift(newProduct);
-                showToast('New product added successfully! 🎉');
-            }
+            const docId = prodId ? String(prodId) : ('item_' + Date.now());
+            const productData = {
+                name,
+                price,
+                stock,
+                mainCategory,
+                subCategory,
+                size,
+                sizeLabel,
+                availabilityStatus,
+                badge,
+                image,
+                images,
+                desc,
+                updatedAt: new Date().toISOString()
+            };
 
-            window.closeProductAdminModal();
-            renderProducts();
+            try {
+                const docRef = doc(productsCollectionRef, docId);
+                await setDoc(docRef, productData, { merge: true });
+                
+                showToast(prodId ? 'Product updated on cloud! ✨' : 'New product created! 🎉');
+                window.closeProductAdminModal();
+            } catch (err) {
+                console.error("Error saving to Firestore:", err);
+                showToast("Failed to save product to cloud: " + err.message);
+            }
         };
 
-        window.deleteProductAdmin = function(prodId) {
-            const prod = products.find(p => p.id === Number(prodId));
+        window.deleteProductAdmin = async function(prodId) {
+            const prod = products.find(p => String(p.id) === String(prodId));
             if (!prod) return;
 
             const confirmed = window.confirm(`Are you sure you want to delete "${prod.name}"?`);
             if (confirmed) {
-                products = products.filter(p => p.id !== Number(prodId));
-                cart = cart.filter(item => item.id !== Number(prodId));
-                renderProducts();
-                renderCart();
-                showToast('Product deleted.');
+                try {
+                    const docRef = doc(productsCollectionRef, String(prodId));
+                    await deleteDoc(docRef);
+
+                    cart = cart.filter(item => String(item.id) !== String(prodId));
+                    renderCart();
+                    showToast('Product deleted from cloud.');
+                } catch (err) {
+                    console.error("Error deleting from Firestore:", err);
+                    showToast("Failed to delete product: " + err.message);
+                }
             }
         };
 
         // Cart Actions
         window.addToCart = function(productId, quantity = 1) {
-            const product = products.find(p => p.id === productId);
+            const product = products.find(p => String(p.id) === String(productId));
             if (!product) return;
 
-            const existingIndex = cart.findIndex(item => item.id === productId);
+            const existingIndex = cart.findIndex(item => String(item.id) === String(productId));
             if (existingIndex > -1) {
                 cart[existingIndex].quantity += quantity;
             } else {
@@ -1168,7 +1164,7 @@
         };
 
         window.updateQuantity = function(productId, delta) {
-            const index = cart.findIndex(item => item.id === productId);
+            const index = cart.findIndex(item => String(item.id) === String(productId));
             if (index === -1) return;
 
             cart[index].quantity += delta;
@@ -1179,7 +1175,7 @@
         };
 
         window.removeFromCart = function(productId) {
-            cart = cart.filter(item => item.id !== productId);
+            cart = cart.filter(item => String(item.id) !== String(productId));
             renderCart();
         };
 
@@ -1195,7 +1191,7 @@
             if (summaryHeader) summaryHeader.innerText = totalItemsCount + (totalItemsCount === 1 ? ' item' : ' items') + ' selected';
 
             const totalPrice = cart.reduce((sum, item) => {
-                const prod = products.find(p => p.id === item.id);
+                const prod = products.find(p => String(p.id) === String(item.id));
                 return sum + ((prod ? Number(prod.price) : Number(item.price)) * item.quantity);
             }, 0);
 
@@ -1223,7 +1219,7 @@
             }
 
             container.innerHTML = cart.map(item => {
-                const product = products.find(p => p.id === item.id);
+                const product = products.find(p => String(p.id) === String(item.id));
                 const name = product ? product.name : 'Item';
                 const sizeLabel = product && product.sizeLabel ? ' (' + product.sizeLabel + ')' : '';
 
@@ -1243,12 +1239,12 @@
                         
                         <div class="flex items-center gap-2">
                             <div class="flex items-center bg-white border border-pink-200 rounded-lg shadow-xs">
-                                <button onclick="window.updateQuantity(${item.id}, -1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
-                                    <i data-lucide="minus" class="w-3 h-3"></i>
+                                <button onclick="window.updateQuantity('${item.id}', -1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
+                                    <i data-lucide="minus" class="w-3.5 h-3.5"></i>
                                 </button>
                                 <span class="text-xs font-black px-2 text-slate-800">${item.quantity}</span>
-                                <button onclick="window.updateQuantity(${item.id}, 1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
-                                    <i data-lucide="plus" class="w-3 h-3"></i>
+                                <button onclick="window.updateQuantity('${item.id}', 1)" class="p-1 px-2 text-slate-500 hover:text-pink-600">
+                                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                                 </button>
                             </div>
                             <span class="text-xs font-black text-slate-900 ml-auto">
@@ -1257,7 +1253,7 @@
                         </div>
                     </div>
 
-                    <button onclick="window.removeFromCart(${item.id})" class="p-1.5 text-slate-400 hover:text-rose-500 transition-colors" title="Remove">
+                    <button onclick="window.removeFromCart('${item.id}')" class="p-1.5 text-slate-400 hover:text-rose-500 transition-colors" title="Remove">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -1267,7 +1263,6 @@
             if (window.lucide) lucide.createIcons();
         }
 
-        // Toggle Drawers & Modals
         window.toggleCartDrawer = function(open) {
             const drawer = document.getElementById('cartDrawer');
             const backdrop = document.getElementById('cartDrawerBackdrop');
@@ -1283,7 +1278,6 @@
             }
         };
 
-        // Generate Order Text (Clean safe strings)
         function generateOrderText() {
             if (cart.length === 0) return null;
 
@@ -1305,7 +1299,7 @@
             ];
 
             cart.forEach((item, index) => {
-                const prod = products.find(p => p.id === item.id);
+                const prod = products.find(p => String(p.id) === String(item.id));
                 const prodName = prod ? prod.name : 'Item';
                 const itemTotal = (Number(item.price) * item.quantity).toFixed(2);
                 lines.push((index + 1) + '. ' + prodName + '\n   └ Qty: ' + item.quantity + ' x €' + Number(item.price).toFixed(2) + ' = €' + itemTotal);
@@ -1369,7 +1363,6 @@
             }, 500);
         };
 
-        // Toast Helper
         let toastTimeout;
         function showToast(message, duration = 3000) {
             const toast = document.getElementById('toast');
